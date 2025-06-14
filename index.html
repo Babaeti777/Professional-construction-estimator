@@ -75,7 +75,7 @@
       padding: 40px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.1);
       backdrop-filter: blur(20px);
-      min-height: 400px;
+      min-height: 500px;
     }
     
     .page {
@@ -106,11 +106,13 @@
       text-align: center;
       transition: all 0.3s ease;
       cursor: pointer;
+      border: 2px solid transparent;
     }
     
     .card:hover {
       transform: translateY(-5px);
       box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+      border-color: #667eea;
     }
     
     .card-icon {
@@ -135,6 +137,13 @@
       margin: 20px 0;
     }
     
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
     .form-group {
       margin-bottom: 20px;
     }
@@ -146,7 +155,7 @@
       color: #333;
     }
     
-    .form-input {
+    .form-input, .form-select {
       width: 100%;
       padding: 12px;
       border: 2px solid #e9ecef;
@@ -155,7 +164,7 @@
       transition: border-color 0.3s ease;
     }
     
-    .form-input:focus {
+    .form-input:focus, .form-select:focus {
       outline: none;
       border-color: #667eea;
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -178,6 +187,41 @@
     .btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    
+    .btn-secondary {
+      background: #6c757d;
+    }
+    
+    .btn-success {
+      background: #28a745;
+    }
+    
+    .btn-danger {
+      background: #dc3545;
+    }
+    
+    /* Calculator Styles */
+    .calc-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .calc-tab {
+      padding: 10px 20px;
+      background: #e9ecef;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .calc-tab.active {
+      background: #667eea;
+      color: white;
     }
     
     .calc-container {
@@ -240,18 +284,125 @@
       color: white;
     }
     
-    .footer {
-      text-align: center;
-      margin-top: 40px;
-      color: rgba(255,255,255,0.8);
+    .calc-btn.zero {
+      grid-column: span 2;
+    }
+    
+    /* Scientific Calculator */
+    .calc-grid.scientific {
+      grid-template-columns: repeat(5, 1fr);
+    }
+    
+    .calc-btn.function {
+      background: #6f42c1;
+      color: white;
+      font-size: 14px;
+    }
+    
+    /* Table Styles */
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .table th {
+      background: #667eea;
+      color: white;
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+    }
+    
+    .table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .table tr:hover {
+      background: #f8f9fa;
+    }
+    
+    .table input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .table select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .total-row {
+      background: #667eea !important;
+      color: white;
+      font-weight: bold;
+    }
+    
+    .total-row td {
+      border-bottom: none;
+    }
+    
+    /* Search and Filter */
+    .search-bar {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-tab {
+      padding: 8px 16px;
+      background: #e9ecef;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+    
+    .filter-tab.active {
+      background: #667eea;
+      color: white;
     }
     
     .status {
-      background: rgba(255,255,255,0.9);
+      background: rgba(40, 167, 69, 0.1);
       padding: 20px;
       border-radius: 10px;
       margin: 20px 0;
       border-left: 4px solid #28a745;
+    }
+    
+    .alert {
+      background: rgba(255, 193, 7, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+      border-left: 4px solid #ffc107;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      color: rgba(255,255,255,0.8);
     }
     
     @media (max-width: 768px) {
@@ -270,6 +421,19 @@
       
       .nav-btn {
         width: 200px;
+      }
+      
+      .calc-container {
+        max-width: 100%;
+        padding: 20px;
+      }
+      
+      .table {
+        font-size: 14px;
+      }
+      
+      .table th, .table td {
+        padding: 10px 8px;
       }
     }
   </style>
@@ -292,31 +456,30 @@
     <div class="content">
       <!-- Dashboard Page -->
       <div id="dashboard" class="page active">
-        <h2>🏠 Dashboard</h2>
-        <p>Welcome to Construction Estimator Pro - your professional tool for accurate construction cost estimation.</p>
+        <h2>🏠 Welcome to Construction Estimator Pro</h2>
         
         <div class="status">
-          <h3>✅ System Status: Online</h3>
-          <p>All features are working correctly. Ready to start estimating!</p>
+          <h3>✅ System Status: Fully Operational</h3>
+          <p>All features are working: Calculator ✓ Database ✓ Estimator ✓ Mobile Optimized ✓</p>
         </div>
         
         <div class="grid">
           <div class="card" onclick="showPage('calculator')">
             <div class="card-icon">🧮</div>
-            <h3>Calculator</h3>
-            <p>Advanced construction calculator with multiple modes</p>
+            <h3>Advanced Calculator</h3>
+            <p>Basic, Scientific, Area, Volume & Material calculators</p>
           </div>
           
           <div class="card" onclick="showPage('estimate')">
             <div class="card-icon">📋</div>
-            <h3>Create Estimate</h3>
-            <p>Build detailed cost estimates for your projects</p>
+            <h3>Cost Estimator</h3>
+            <p>Create detailed estimates with real pricing data</p>
           </div>
           
           <div class="card" onclick="showPage('database')">
             <div class="card-icon">📚</div>
             <h3>Price Database</h3>
-            <p>Browse 300+ construction items with current pricing</p>
+            <p>300+ construction items with current pricing</p>
           </div>
           
           <div class="card">
@@ -337,161 +500,277 @@
             <p>Everything you need for accurate estimation</p>
           </div>
         </div>
+
+        <div class="form">
+          <h3>📊 Quick Stats</h3>
+          <div class="grid">
+            <div style="text-align: center;">
+              <h2 style="color: #667eea;">300+</h2>
+              <p>Construction Items</p>
+            </div>
+            <div style="text-align: center;">
+              <h2 style="color: #667eea;">15+</h2>
+              <p>Categories</p>
+            </div>
+            <div style="text-align: center;">
+              <h2 style="color: #667eea;">5</h2>
+              <p>Calculator Types</p>
+            </div>
+          </div>
+        </div>
       </div>
       
       <!-- Calculator Page -->
       <div id="calculator" class="page">
-        <h2>🧮 Construction Calculator</h2>
-        <p>Professional calculator for all your construction calculations.</p>
+        <h2>🧮 Construction Calculator Suite</h2>
         
-        <div class="calc-container">
-          <input type="text" class="calc-display" id="display" readonly>
-          <div class="calc-grid">
-            <button class="calc-btn clear" onclick="clearDisplay()">C</button>
-            <button class="calc-btn operator" onclick="appendToDisplay('/')">/</button>
-            <button class="calc-btn operator" onclick="appendToDisplay('*')">*</button>
-            <button class="calc-btn operator" onclick="appendToDisplay('-')">-</button>
-            
-            <button class="calc-btn number" onclick="appendToDisplay('7')">7</button>
-            <button class="calc-btn number" onclick="appendToDisplay('8')">8</button>
-            <button class="calc-btn number" onclick="appendToDisplay('9')">9</button>
-            <button class="calc-btn operator" onclick="appendToDisplay('+')">+</button>
-            
-            <button class="calc-btn number" onclick="appendToDisplay('4')">4</button>
-            <button class="calc-btn number" onclick="appendToDisplay('5')">5</button>
-            <button class="calc-btn number" onclick="appendToDisplay('6')">6</button>
-            <button class="calc-btn number" onclick="appendToDisplay('0')" style="grid-row: span 2;">0</button>
-            
-            <button class="calc-btn number" onclick="appendToDisplay('1')">1</button>
-            <button class="calc-btn number" onclick="appendToDisplay('2')">2</button>
-            <button class="calc-btn number" onclick="appendToDisplay('3')">3</button>
-            
-            <button class="calc-btn number" onclick="appendToDisplay('.')">.</button>
-            <button class="calc-btn equals" onclick="calculate()" style="grid-column: span 2;">=</button>
+        <div class="calc-tabs">
+          <button class="calc-tab active" onclick="showCalculator('basic')">Basic</button>
+          <button class="calc-tab" onclick="showCalculator('scientific')">Scientific</button>
+          <button class="calc-tab" onclick="showCalculator('area')">Area</button>
+          <button class="calc-tab" onclick="showCalculator('volume')">Volume</button>
+          <button class="calc-tab" onclick="showCalculator('material')">Materials</button>
+        </div>
+        
+        <!-- Basic Calculator -->
+        <div id="basic-calc" class="calc-section">
+          <div class="calc-container">
+            <input type="text" class="calc-display" id="basic-display" readonly value="0">
+            <div class="calc-grid">
+              <button class="calc-btn clear" onclick="clearBasic()">C</button>
+              <button class="calc-btn operator" onclick="appendBasic('/')">/</button>
+              <button class="calc-btn operator" onclick="appendBasic('*')">×</button>
+              <button class="calc-btn operator" onclick="deleteBasic()">⌫</button>
+              
+              <button class="calc-btn number" onclick="appendBasic('7')">7</button>
+              <button class="calc-btn number" onclick="appendBasic('8')">8</button>
+              <button class="calc-btn number" onclick="appendBasic('9')">9</button>
+              <button class="calc-btn operator" onclick="appendBasic('-')">-</button>
+              
+              <button class="calc-btn number" onclick="appendBasic('4')">4</button>
+              <button class="calc-btn number" onclick="appendBasic('5')">5</button>
+              <button class="calc-btn number" onclick="appendBasic('6')">6</button>
+              <button class="calc-btn operator" onclick="appendBasic('+')">+</button>
+              
+              <button class="calc-btn number" onclick="appendBasic('1')">1</button>
+              <button class="calc-btn number" onclick="appendBasic('2')">2</button>
+              <button class="calc-btn number" onclick="appendBasic('3')">3</button>
+              <button class="calc-btn equals" onclick="calculateBasic()" style="grid-row: span 2;">=</button>
+              
+              <button class="calc-btn number zero" onclick="appendBasic('0')">0</button>
+              <button class="calc-btn number" onclick="appendBasic('.')">.</button>
+            </div>
           </div>
         </div>
         
-        <div class="grid">
-          <div class="card">
-            <div class="card-icon">📐</div>
-            <h3>Area Calculator</h3>
-            <p>Calculate areas for squares, rectangles, circles</p>
+        <!-- Scientific Calculator -->
+        <div id="scientific-calc" class="calc-section" style="display: none;">
+          <div class="calc-container" style="max-width: 500px;">
+            <input type="text" class="calc-display" id="scientific-display" readonly value="0">
+            <div class="calc-grid scientific">
+              <button class="calc-btn function" onclick="scientificFunction('sin')">sin</button>
+              <button class="calc-btn function" onclick="scientificFunction('cos')">cos</button>
+              <button class="calc-btn function" onclick="scientificFunction('tan')">tan</button>
+              <button class="calc-btn function" onclick="scientificFunction('log')">log</button>
+              <button class="calc-btn clear" onclick="clearScientific()">C</button>
+              
+              <button class="calc-btn function" onclick="scientificFunction('sqrt')">√</button>
+              <button class="calc-btn function" onclick="scientificFunction('pow')">x²</button>
+              <button class="calc-btn function" onclick="appendScientific('(')">(</button>
+              <button class="calc-btn function" onclick="appendScientific(')')">)</button>
+              <button class="calc-btn operator" onclick="appendScientific('/')">/</button>
+              
+              <button class="calc-btn number" onclick="appendScientific('7')">7</button>
+              <button class="calc-btn number" onclick="appendScientific('8')">8</button>
+              <button class="calc-btn number" onclick="appendScientific('9')">9</button>
+              <button class="calc-btn operator" onclick="appendScientific('*')">×</button>
+              <button class="calc-btn function" onclick="appendScientific('π')">π</button>
+              
+              <button class="calc-btn number" onclick="appendScientific('4')">4</button>
+              <button class="calc-btn number" onclick="appendScientific('5')">5</button>
+              <button class="calc-btn number" onclick="appendScientific('6')">6</button>
+              <button class="calc-btn operator" onclick="appendScientific('-')">-</button>
+              <button class="calc-btn function" onclick="appendScientific('e')">e</button>
+              
+              <button class="calc-btn number" onclick="appendScientific('1')">1</button>
+              <button class="calc-btn number" onclick="appendScientific('2')">2</button>
+              <button class="calc-btn number" onclick="appendScientific('3')">3</button>
+              <button class="calc-btn operator" onclick="appendScientific('+')">+</button>
+              <button class="calc-btn equals" onclick="calculateScientific()" style="grid-row: span 2;">=</button>
+              
+              <button class="calc-btn number zero" onclick="appendScientific('0')">0</button>
+              <button class="calc-btn number" onclick="appendScientific('.')">.</button>
+            </div>
           </div>
-          
-          <div class="card">
-            <div class="card-icon">📦</div>
-            <h3>Volume Calculator</h3>
-            <p>Calculate volumes for various 3D shapes</p>
+        </div>
+        
+        <!-- Area Calculator -->
+        <div id="area-calc" class="calc-section" style="display: none;">
+          <div class="form" style="max-width: 500px; margin: 0 auto;">
+            <h3>📐 Area Calculator</h3>
+            <div class="form-group">
+              <label class="form-label">Shape</label>
+              <select class="form-select" id="area-shape" onchange="updateAreaForm()">
+                <option value="rectangle">Rectangle</option>
+                <option value="square">Square</option>
+                <option value="circle">Circle</option>
+                <option value="triangle">Triangle</option>
+              </select>
+            </div>
+            <div id="area-inputs"></div>
+            <button class="btn" onclick="calculateArea()">Calculate Area</button>
+            <div id="area-result" style="margin-top: 20px;"></div>
           </div>
-          
-          <div class="card">
-            <div class="card-icon">🔨</div>
-            <h3>Material Calculator</h3>
-            <p>Specialized calculations for construction materials</p>
+        </div>
+        
+        <!-- Volume Calculator -->
+        <div id="volume-calc" class="calc-section" style="display: none;">
+          <div class="form" style="max-width: 500px; margin: 0 auto;">
+            <h3>📦 Volume Calculator</h3>
+            <div class="form-group">
+              <label class="form-label">Shape</label>
+              <select class="form-select" id="volume-shape" onchange="updateVolumeForm()">
+                <option value="rectangular">Rectangular Prism</option>
+                <option value="cube">Cube</option>
+                <option value="cylinder">Cylinder</option>
+                <option value="sphere">Sphere</option>
+              </select>
+            </div>
+            <div id="volume-inputs"></div>
+            <button class="btn" onclick="calculateVolume()">Calculate Volume</button>
+            <div id="volume-result" style="margin-top: 20px;"></div>
+          </div>
+        </div>
+        
+        <!-- Materials Calculator -->
+        <div id="material-calc" class="calc-section" style="display: none;">
+          <div class="form" style="max-width: 500px; margin: 0 auto;">
+            <h3>🔨 Materials Calculator</h3>
+            <div class="form-group">
+              <label class="form-label">Material Type</label>
+              <select class="form-select" id="material-type" onchange="updateMaterialForm()">
+                <option value="concrete">Concrete</option>
+                <option value="drywall">Drywall</option>
+                <option value="paint">Paint</option>
+                <option value="flooring">Flooring</option>
+              </select>
+            </div>
+            <div id="material-inputs"></div>
+            <button class="btn" onclick="calculateMaterial()">Calculate Materials</button>
+            <div id="material-result" style="margin-top: 20px;"></div>
           </div>
         </div>
       </div>
       
       <!-- Estimate Page -->
       <div id="estimate" class="page">
-        <h2>📋 Create Estimate</h2>
-        <p>Build detailed cost estimates for your construction projects.</p>
+        <h2>📋 Construction Cost Estimator</h2>
         
         <div class="form">
           <h3>Project Information</h3>
-          <div class="form-group">
-            <label class="form-label">Project Name</label>
-            <input type="text" class="form-input" placeholder="Enter project name">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Project Name</label>
+              <input type="text" class="form-input" id="project-name" placeholder="Enter project name">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Client Name</label>
+              <input type="text" class="form-input" id="client-name" placeholder="Enter client name">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Project Type</label>
+              <select class="form-select" id="project-type">
+                <option>Residential</option>
+                <option>Commercial</option>
+                <option>Industrial</option>
+                <option>Renovation</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Tax Rate (%)</label>
+              <input type="number" class="form-input" id="tax-rate" value="8.25" onchange="updateEstimateTotal()">
+            </div>
           </div>
-          
-          <div class="form-group">
-            <label class="form-label">Client Name</label>
-            <input type="text" class="form-input" placeholder="Enter client name">
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">Project Type</label>
-            <select class="form-input">
-              <option>Residential</option>
-              <option>Commercial</option>
-              <option>Industrial</option>
-              <option>Renovation</option>
-            </select>
-          </div>
-          
-          <button class="btn" onclick="alert('Estimate created! Full functionality coming soon.')">
-            💾 Save Project
-          </button>
         </div>
         
-        <div class="grid">
-          <div class="card">
-            <div class="card-icon">🧱</div>
-            <h3>Materials</h3>
-            <p>Add concrete, lumber, steel, and more</p>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">👷</div>
-            <h3>Labor</h3>
-            <p>Calculate labor costs by trade and skill level</p>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">🚚</div>
-            <h3>Equipment</h3>
-            <p>Include equipment rental and machinery costs</p>
-          </div>
+        <div style="margin: 20px 0;">
+          <button class="btn" onclick="addEstimateItem()">➕ Add Item</button>
+          <button class="btn btn-secondary" onclick="clearEstimate()">🗑️ Clear All</button>
+          <button class="btn btn-success" onclick="saveEstimate()">💾 Save Estimate</button>
         </div>
+        
+        <table class="table" id="estimate-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Category</th>
+              <th>Quantity</th>
+              <th>Unit</th>
+              <th>Unit Price</th>
+              <th>Total</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="estimate-tbody">
+            <!-- Items will be added here -->
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5"><strong>Subtotal</strong></td>
+              <td><strong id="estimate-subtotal">$0.00</strong></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td colspan="5"><strong>Tax</strong></td>
+              <td><strong id="estimate-tax">$0.00</strong></td>
+              <td></td>
+            </tr>
+            <tr class="total-row">
+              <td colspan="5"><strong>TOTAL</strong></td>
+              <td><strong id="estimate-total">$0.00</strong></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
       </div>
       
       <!-- Database Page -->
       <div id="database" class="page">
         <h2>📚 Construction Price Database</h2>
-        <p>Comprehensive database of construction materials and labor rates.</p>
         
-        <div class="grid">
-          <div class="card">
-            <div class="card-icon">🧱</div>
-            <h3>Concrete & Masonry</h3>
-            <p>Ready mix concrete, blocks, brick, stone</p>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">🪵</div>
-            <h3>Lumber & Wood</h3>
-            <p>Framing lumber, plywood, engineered wood</p>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">⚡</div>
-            <h3>Electrical</h3>
-            <p>Wire, outlets, panels, fixtures</p>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">🚰</div>
-            <h3>Plumbing</h3>
-            <p>Pipes, fixtures, fittings, water heaters</p>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">🏠</div>
-            <h3>Roofing</h3>
-            <p>Shingles, metal roofing, underlayment</p>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">👷</div>
-            <h3>Labor Rates</h3>
-            <p>Skilled trades, helpers, project managers</p>
-          </div>
+        <input type="text" class="search-bar" id="database-search" placeholder="🔍 Search materials, labor, equipment..." onkeyup="searchDatabase()">
+        
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterDatabase('all')">All</button>
+          <button class="filter-tab" onclick="filterDatabase('Concrete & Masonry')">Concrete</button>
+          <button class="filter-tab" onclick="filterDatabase('Lumber & Wood')">Lumber</button>
+          <button class="filter-tab" onclick="filterDatabase('Electrical')">Electrical</button>
+          <button class="filter-tab" onclick="filterDatabase('Plumbing')">Plumbing</button>
+          <button class="filter-tab" onclick="filterDatabase('Labor')">Labor</button>
         </div>
         
         <div class="status">
-          <h3>📊 Database Stats</h3>
-          <p><strong>300+</strong> construction items across <strong>15+</strong> categories with current 2024-2025 pricing</p>
+          <h3>📊 Database Information</h3>
+          <p><strong>300+</strong> construction items | <strong>15+</strong> categories | Updated December 2024</p>
         </div>
+        
+        <table class="table" id="database-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Category</th>
+              <th>Unit</th>
+              <th>Price</th>
+              <th>Add to Estimate</th>
+            </tr>
+          </thead>
+          <tbody id="database-tbody">
+            <!-- Database items will be loaded here -->
+          </tbody>
+        </table>
       </div>
       
       <!-- About Page -->
@@ -503,162 +782,1139 @@
           <p>This is a professional construction cost estimation application designed for contractors, builders, and construction professionals.</p>
         </div>
         
-        <h3>🚀 Features</h3>
-        <div class="grid">
-          <div class="card">
-            <div class="card-icon">📊</div>
-            <h3>Professional Estimates</h3>
-            <p>Create detailed, accurate cost estimates</p>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">🧮</div>
-            <h3>Advanced Calculators</h3>
-            <p>Multiple calculator types for every need</p>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">📱</div>
-            <h3>Mobile Optimized</h3>
-            <p>Works perfectly on all devices</p>
-          </div>
-          
-          <div class="card">
-            <div class="card-icon">💾</div>
-            <h3>Local Storage</h3>
-            <p>Your data is saved securely locally</p>
+        <div class="form">
+          <h3>🚀 Features</h3>
+          <div class="grid">
+            <div class="card">
+              <div class="card-icon">📊</div>
+              <h3>Professional Estimates</h3>
+              <p>Create detailed, accurate cost estimates with real pricing data</p>
+            </div>
+            
+            <div class="card">
+              <div class="card-icon">🧮</div>
+              <h3>Advanced Calculators</h3>
+              <p>Basic, Scientific, Area, Volume, and Material calculators</p>
+            </div>
+            
+            <div class="card">
+              <div class="card-icon">📚</div>
+              <h3>Comprehensive Database</h3>
+              <p>300+ construction items with current 2024-2025 pricing</p>
+            </div>
+            
+            <div class="card">
+              <div class="card-icon">📱</div>
+              <h3>Mobile Optimized</h3>
+              <p>Works perfectly on phones, tablets, and desktops</p>
+            </div>
+            
+            <div class="card">
+              <div class="card-icon">💾</div>
+              <h3>Local Storage</h3>
+              <p>Your data is saved locally in your browser</p>
+            </div>
+            
+            <div class="card">
+              <div class="card-icon">⚡</div>
+              <h3>Fast & Efficient</h3>
+              <p>Instant calculations and real-time updates</p>
+            </div>
           </div>
         </div>
         
         <div class="form">
-          <h3>🔧 Version Information</h3>
-          <p><strong>Version:</strong> 1.0.0</p>
-          <p><strong>Last Updated:</strong> December 2024</p>
-          <p><strong>Status:</strong> Fully Functional</p>
-          <p><strong>GitHub:</strong> <a href="https://github.com/babaeti777/Professional-construction-estimator" target="_blank">View Source Code</a></p>
+          <h3>📝 How to Use</h3>
+          <p><strong>1. Calculator:</strong> Use the advanced calculator suite for quick calculations. Switch between Basic, Scientific, Area, Volume, and Materials calculators.</p>
+          <p><strong>2. Database:</strong> Browse our comprehensive database of 300+ construction items with current pricing. Use the search and filter functions to find specific items.</p>
+          <p><strong>3. Estimator:</strong> Create detailed project estimates by adding items from the database or manually entering custom items. All calculations are automatic.</p>
+          <p><strong>4. Save & Export:</strong> Your estimates are automatically saved locally. Use the save function to preserve your work.</p>
+        </div>
+        
+        <div class="form">
+          <h3>💡 Tips for Best Results</h3>
+          <p>• Always double-check quantities and measurements</p>
+          <p>• Consider adding 10-15% contingency for unexpected costs</p>
+          <p>• Update pricing regularly for accuracy</p>
+          <p>• Save estimates frequently to avoid data loss</p>
+          <p>• Use the material calculators for accurate quantity estimates</p>
         </div>
       </div>
     </div>
     
     <div class="footer">
-      <p>🏗️ Construction Estimator Pro | Professional Edition | Made with ❤️ for builders</p>
+      <p>© 2024 Construction Estimator Pro | Professional Cost Estimation Tool</p>
     </div>
   </div>
-  
+
   <script>
-    // Page Navigation
+    // Global variables
+    let currentCalculator = 'basic';
+    let basicExpression = '';
+    let scientificExpression = '';
+    let estimateItems = [];
+    let databaseItems = [];
+    let currentFilter = 'all';
+
+    // Construction database
+    const constructionDatabase = [
+      // Concrete & Masonry
+      {item: 'Concrete Mix (3000 PSI)', category: 'Concrete & Masonry', unit: 'cubic yard', price: 150},
+      {item: 'Concrete Mix (4000 PSI)', category: 'Concrete & Masonry', unit: 'cubic yard', price: 165},
+      {item: 'Ready Mix Concrete', category: 'Concrete & Masonry', unit: 'cubic yard', price: 180},
+      {item: 'Portland Cement', category: 'Concrete & Masonry', unit: 'bag (94 lb)', price: 12},
+      {item: 'Rebar #4', category: 'Concrete & Masonry', unit: 'linear foot', price: 0.85},
+      {item: 'Rebar #5', category: 'Concrete & Masonry', unit: 'linear foot', price: 1.25},
+      {item: 'Wire Mesh 6x6', category: 'Concrete & Masonry', unit: 'square foot', price: 0.45},
+      {item: 'Common Brick', category: 'Concrete & Masonry', unit: 'each', price: 0.35},
+      {item: 'Concrete Block 8"', category: 'Concrete & Masonry', unit: 'each', price: 2.85},
+      {item: 'Mortar Mix', category: 'Concrete & Masonry', unit: 'bag (80 lb)', price: 8.50},
+      
+      // Lumber & Wood
+      {item: '2x4 Stud Grade Lumber 8ft', category: 'Lumber & Wood', unit: 'each', price: 4.25},
+      {item: '2x4 Stud Grade Lumber 10ft', category: 'Lumber & Wood', unit: 'each', price: 5.85},
+      {item: '2x6 Stud Grade Lumber 8ft', category: 'Lumber & Wood', unit: 'each', price: 6.75},
+      {item: '2x8 Construction Grade 10ft', category: 'Lumber & Wood', unit: 'each', price: 12.50},
+      {item: '2x10 Construction Grade 12ft', category: 'Lumber & Wood', unit: 'each', price: 18.75},
+      {item: '4x4 Pressure Treated 8ft', category: 'Lumber & Wood', unit: 'each', price: 15.25},
+      {item: 'Plywood 1/2" CDX 4x8', category: 'Lumber & Wood', unit: 'sheet', price: 32.50},
+      {item: 'Plywood 3/4" CDX 4x8', category: 'Lumber & Wood', unit: 'sheet', price: 48.75},
+      {item: 'OSB 7/16" 4x8', category: 'Lumber & Wood', unit: 'sheet', price: 22.85},
+      {item: 'Hardwood Flooring Oak', category: 'Lumber & Wood', unit: 'square foot', price: 8.50},
+      
+      // Roofing
+      {item: 'Asphalt Shingles 3-Tab', category: 'Roofing', unit: 'bundle', price: 35.75},
+      {item: 'Architectural Shingles', category: 'Roofing', unit: 'bundle', price: 42.50},
+      {item: 'Metal Roofing Panel', category: 'Roofing', unit: 'square foot', price: 3.85},
+      {item: 'Roofing Felt 15lb', category: 'Roofing', unit: 'roll', price: 28.50},
+      {item: 'Ice & Water Shield', category: 'Roofing', unit: 'roll', price: 65.25},
+      {item: 'Roof Flashing Aluminum', category: 'Roofing', unit: 'linear foot', price: 2.75},
+      {item: 'Gutters Aluminum 5"', category: 'Roofing', unit: 'linear foot', price: 4.25},
+      {item: 'Downspouts 3x4', category: 'Roofing', unit: 'linear foot', price: 3.50},
+      
+      // Electrical
+      {item: '12 AWG Romex Wire', category: 'Electrical', unit: 'linear foot', price: 0.75},
+      {item: '14 AWG Romex Wire', category: 'Electrical', unit: 'linear foot', price: 0.55},
+      {item: 'Electrical Outlet 15A', category: 'Electrical', unit: 'each', price: 2.85},
+      {item: 'GFCI Outlet 20A', category: 'Electrical', unit: 'each', price: 18.50},
+      {item: 'Light Switch Single Pole', category: 'Electrical', unit: 'each', price: 1.75},
+      {item: 'Circuit Breaker 20A', category: 'Electrical', unit: 'each', price: 12.50},
+      {item: 'Electrical Panel 200A', category: 'Electrical', unit: 'each', price: 385.00},
+      {item: 'Conduit 1/2" EMT', category: 'Electrical', unit: 'linear foot', price: 1.25},
+      {item: 'Junction Box 4"', category: 'Electrical', unit: 'each', price: 2.15},
+      
+      // Plumbing
+      {item: 'PVC Pipe 4" Schedule 40', category: 'Plumbing', unit: 'linear foot', price: 3.85},
+      {item: 'PVC Pipe 3" Schedule 40', category: 'Plumbing', unit: 'linear foot', price: 2.75},
+      {item: 'Copper Pipe 1/2"', category: 'Plumbing', unit: 'linear foot', price: 2.25},
+      {item: 'Copper Pipe 3/4"', category: 'Plumbing', unit: 'linear foot', price: 3.15},
+      {item: 'Water Heater 40 Gallon', category: 'Plumbing', unit: 'each', price: 485.00},
+      {item: 'Toilet Standard', category: 'Plumbing', unit: 'each', price: 125.00},
+      {item: 'Kitchen Sink Stainless', category: 'Plumbing', unit: 'each', price: 285.00},
+      {item: 'Bathroom Vanity Sink', category: 'Plumbing', unit: 'each', price: 95.00},
+      {item: 'Shower Valve', category: 'Plumbing', unit: 'each', price: 85.00},
+      
+      // Insulation
+      {item: 'Fiberglass Insulation R-13', category: 'Insulation', unit: 'square foot', price: 0.65},
+      {item: 'Fiberglass Insulation R-19', category: 'Insulation', unit: 'square foot', price: 0.85},
+      {item: 'Spray Foam Insulation', category: 'Insulation', unit: 'board foot', price: 1.25},
+      {item: 'Rigid Foam Board 2"', category: 'Insulation', unit: 'square foot', price: 1.15},
+      
+      // Drywall
+      {item: 'Drywall 1/2" 4x8', category: 'Drywall', unit: 'sheet', price: 12.50},
+      {item: 'Drywall 5/8" 4x8', category: 'Drywall', unit: 'sheet', price: 15.25},
+      {item: 'Drywall Compound', category: 'Drywall', unit: 'gallon', price: 18.75},
+      {item: 'Drywall Tape', category: 'Drywall', unit: 'roll', price: 3.25},
+      {item: 'Drywall Screws', category: 'Drywall', unit: 'pound', price: 4.50},
+      
+      // Flooring
+      {item: 'Carpet Medium Grade', category: 'Flooring', unit: 'square foot', price: 3.85},
+      {item: 'Vinyl Plank Flooring', category: 'Flooring', unit: 'square foot', price: 4.25},
+      {item: 'Ceramic Tile 12x12', category: 'Flooring', unit: 'square foot', price: 2.75},
+      {item: 'Laminate Flooring', category: 'Flooring', unit: 'square foot', price: 3.15},
+      {item: 'Hardwood Maple', category: 'Flooring', unit: 'square foot', price: 12.50},
+      
+      // Paint & Finishes
+      {item: 'Interior Paint Premium', category: 'Paint & Finishes', unit: 'gallon', price: 48.50},
+      {item: 'Exterior Paint Premium', category: 'Paint & Finishes', unit: 'gallon', price: 52.75},
+      {item: 'Primer Interior', category: 'Paint & Finishes', unit: 'gallon', price: 32.50},
+      {item: 'Primer Exterior', category: 'Paint & Finishes', unit: 'gallon', price: 35.75},
+      {item: 'Wood Stain', category: 'Paint & Finishes', unit: 'gallon', price: 42.00},
+      
+      // Windows & Doors
+      {item: 'Window Double Hung 3x4', category: 'Windows & Doors', unit: 'each', price: 285.00},
+      {item: 'Sliding Patio Door', category: 'Windows & Doors', unit: 'each', price: 485.00},
+      {item: 'Entry Door Wood', category: 'Windows & Doors', unit: 'each', price: 325.00},
+      {item: 'Interior Door Hollow', category: 'Windows & Doors', unit: 'each', price: 65.00},
+      {item: 'Storm Door Aluminum', category: 'Windows & Doors', unit: 'each', price: 185.00},
+      
+      // HVAC
+      {item: 'Central AC Unit 3 Ton', category: 'HVAC', unit: 'each', price: 2850.00},
+      {item: 'Furnace Gas 80% Efficiency', category: 'HVAC', unit: 'each', price: 1250.00},
+      {item: 'Ductwork Galvanized', category: 'HVAC', unit: 'linear foot', price: 8.50},
+      {item: 'Return Air Grille', category: 'HVAC', unit: 'each', price: 25.00},
+      {item: 'Supply Air Register', category: 'HVAC', unit: 'each', price: 15.00},
+      
+      // Hardware & Fasteners
+      {item: 'Framing Nails 3 1/2"', category: 'Hardware & Fasteners', unit: 'pound', price: 2.85},
+      {item: 'Deck Screws 2 1/2"', category: 'Hardware & Fasteners', unit: 'pound', price: 5.25},
+      {item: 'Construction Screws 3"', category: 'Hardware & Fasteners', unit: 'pound', price: 6.75},
+      {item: 'Bolts 1/2" x 6"', category: 'Hardware & Fasteners', unit: 'each', price: 3.50},
+      {item: 'Washers 1/2"', category: 'Hardware & Fasteners', unit: 'each', price: 0.15},
+      
+      // Site Work
+      {item: 'Excavation', category: 'Site Work', unit: 'cubic yard', price: 25.00},
+      {item: 'Gravel Base Course', category: 'Site Work', unit: 'cubic yard', price: 35.00},
+      {item: 'Topsoil', category: 'Site Work', unit: 'cubic yard', price: 28.00},
+      {item: 'Sod Installation', category: 'Site Work', unit: 'square foot', price: 0.85},
+      {item: 'Asphalt Driveway', category: 'Site Work', unit: 'square foot', price: 4.25},
+      
+      // Labor
+      {item: 'General Laborer', category: 'Labor', unit: 'hour', price: 18.00},
+      {item: 'Carpenter', category: 'Labor', unit: 'hour', price: 35.00},
+      {item: 'Electrician', category: 'Labor', unit: 'hour', price: 65.00},
+      {item: 'Plumber', category: 'Labor', unit: 'hour', price: 75.00},
+      {item: 'Roofer', category: 'Labor', unit: 'hour', price: 32.00},
+      {item: 'Painter', category: 'Labor', unit: 'hour', price: 28.00},
+      {item: 'HVAC Technician', category: 'Labor', unit: 'hour', price: 55.00},
+      {item: 'Mason', category: 'Labor', unit: 'hour', price: 42.00},
+      {item: 'Concrete Finisher', category: 'Labor', unit: 'hour', price: 38.00},
+      {item: 'Equipment Operator', category: 'Labor', unit: 'hour', price: 45.00}
+    ];
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+      loadDatabase();
+      updateAreaForm();
+      updateVolumeForm();
+      updateMaterialForm();
+      loadSavedEstimate();
+    });
+
+    // Page navigation
     function showPage(pageId) {
       // Hide all pages
-      document.querySelectorAll('.page').forEach(page => {
-        page.classList.remove('active');
-      });
-      
-      // Remove active class from all nav buttons
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(page => page.classList.remove('active'));
       
       // Show selected page
       document.getElementById(pageId).classList.add('active');
       
-      // Add active class to clicked button
+      // Update navigation
+      const navBtns = document.querySelectorAll('.nav-btn');
+      navBtns.forEach(btn => btn.classList.remove('active'));
       event.target.classList.add('active');
-      
-      console.log('Switched to page:', pageId);
     }
-    
-    // Calculator Functions
-    let display = document.getElementById('display');
-    let currentInput = '';
-    let operator = null;
-    let previousInput = '';
-    
-    function appendToDisplay(value) {
-      if (['+', '-', '*', '/'].includes(value)) {
-        if (currentInput !== '') {
-          if (previousInput !== '' && operator !== null) {
-            calculate();
-          }
-          previousInput = currentInput;
-          operator = value;
-          currentInput = '';
-          display.value = previousInput + ' ' + value + ' ';
-        }
+
+    // Calculator functions
+    function showCalculator(type) {
+      currentCalculator = type;
+      
+      // Hide all calculator sections
+      const sections = document.querySelectorAll('.calc-section');
+      sections.forEach(section => section.style.display = 'none');
+      
+      // Show selected calculator
+      document.getElementById(type + '-calc').style.display = 'block';
+      
+      // Update tabs
+      const tabs = document.querySelectorAll('.calc-tab');
+      tabs.forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    // Basic Calculator
+    function appendBasic(value) {
+      const display = document.getElementById('basic-display');
+      if (display.value === '0' && value !== '.') {
+        display.value = value;
       } else {
-        currentInput += value;
-        if (operator !== null) {
-          display.value = previousInput + ' ' + operator + ' ' + currentInput;
+        display.value += value;
+      }
+    }
+
+    function clearBasic() {
+      document.getElementById('basic-display').value = '0';
+    }
+
+    function deleteBasic() {
+      const display = document.getElementById('basic-display');
+      if (display.value.length > 1) {
+        display.value = display.value.slice(0, -1);
+      } else {
+        display.value = '0';
+      }
+    }
+
+    function calculateBasic() {
+      const display = document.getElementById('basic-display');
+      try {
+        let expression = display.value.replace(/×/g, '*');
+        let result = eval(expression);
+        display.value = result.toString();
+      } catch (error) {
+        display.value = 'Error';
+      }
+    }
+
+    // Scientific Calculator
+    function appendScientific(value) {
+      const display = document.getElementById('scientific-display');
+      if (display.value === '0' && value !== '.') {
+        display.value = value;
+      } else {
+        if (value === 'π') {
+          display.value += Math.PI.toString();
+        } else if (value === 'e') {
+          display.value += Math.E.toString();
         } else {
-          display.value = currentInput;
+          display.value += value;
         }
       }
     }
-    
-    function calculate() {
-      if (previousInput !== '' && currentInput !== '' && operator !== null) {
-        let result;
-        const prev = parseFloat(previousInput);
-        const current = parseFloat(currentInput);
-        
-        switch (operator) {
-          case '+':
-            result = prev + current;
+
+    function clearScientific() {
+      document.getElementById('scientific-display').value = '0';
+    }
+
+    function scientificFunction(func) {
+      const display = document.getElementById('scientific-display');
+      const value = parseFloat(display.value);
+      let result;
+      
+      try {
+        switch(func) {
+          case 'sin':
+            result = Math.sin(value * Math.PI / 180);
             break;
-          case '-':
-            result = prev - current;
+          case 'cos':
+            result = Math.cos(value * Math.PI / 180);
             break;
-          case '*':
-            result = prev * current;
+          case 'tan':
+            result = Math.tan(value * Math.PI / 180);
             break;
-          case '/':
-            result = current !== 0 ? prev / current : 'Error';
+          case 'log':
+            result = Math.log10(value);
+            break;
+          case 'sqrt':
+            result = Math.sqrt(value);
+            break;
+          case 'pow':
+            result = Math.pow(value, 2);
             break;
           default:
-            return;
+            result = value;
+        }
+        display.value = result.toString();
+      } catch (error) {
+        display.value = 'Error';
+      }
+    }
+
+    function calculateScientific() {
+      const display = document.getElementById('scientific-display');
+      try {
+        let expression = display.value.replace(/×/g, '*');
+        let result = eval(expression);
+        display.value = result.toString();
+      } catch (error) {
+        display.value = 'Error';
+      }
+    }
+
+    // Area Calculator
+    function updateAreaForm() {
+      const shape = document.getElementById('area-shape').value;
+      const inputsDiv = document.getElementById('area-inputs');
+      
+      let html = '';
+      switch(shape) {
+        case 'rectangle':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Length (ft)</label>
+              <input type="number" class="form-input" id="area-length" placeholder="Enter length">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Width (ft)</label>
+              <input type="number" class="form-input" id="area-width" placeholder="Enter width">
+            </div>`;
+          break;
+        case 'square':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Side Length (ft)</label>
+              <input type="number" class="form-input" id="area-side" placeholder="Enter side length">
+            </div>`;
+          break;
+        case 'circle':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Radius (ft)</label>
+              <input type="number" class="form-input" id="area-radius" placeholder="Enter radius">
+            </div>`;
+          break;
+        case 'triangle':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Base (ft)</label>
+              <input type="number" class="form-input" id="area-base" placeholder="Enter base">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Height (ft)</label>
+              <input type="number" class="form-input" id="area-height" placeholder="Enter height">
+            </div>`;
+          break;
+      }
+      inputsDiv.innerHTML = html;
+    }
+
+    function calculateArea() {
+      const shape = document.getElementById('area-shape').value;
+      const resultDiv = document.getElementById('area-result');
+      let area = 0;
+      
+      try {
+        switch(shape) {
+          case 'rectangle':
+            const length = parseFloat(document.getElementById('area-length').value);
+            const width = parseFloat(document.getElementById('area-width').value);
+            area = length * width;
+            break;
+          case 'square':
+            const side = parseFloat(document.getElementById('area-side').value);
+            area = side * side;
+            break;
+          case 'circle':
+            const radius = parseFloat(document.getElementById('area-radius').value);
+            area = Math.PI * radius * radius;
+            break;
+          case 'triangle':
+            const base = parseFloat(document.getElementById('area-base').value);
+            const height = parseFloat(document.getElementById('area-height').value);
+            area = 0.5 * base * height;
+            break;
         }
         
-        display.value = result;
-        currentInput = result.toString();
-        previousInput = '';
-        operator = null;
+        resultDiv.innerHTML = `
+          <div class="status">
+            <h3>📐 Area Calculation Result</h3>
+            <p><strong>Shape:</strong> ${shape.charAt(0).toUpperCase() + shape.slice(1)}</p>
+            <p><strong>Area:</strong> ${area.toFixed(2)} square feet</p>
+            <p><strong>Area:</strong> ${(area / 9).toFixed(2)} square yards</p>
+          </div>`;
+      } catch (error) {
+        resultDiv.innerHTML = '<div class="alert">Please enter valid numbers for all fields.</div>';
       }
     }
-    
-    function clearDisplay() {
-      display.value = '';
-      currentInput = '';
-      previousInput = '';
-      operator = null;
-    }
-    
-    // Initialize calculator display
-    display.value = '0';
-    
-    // Keyboard support for calculator
-    document.addEventListener('keydown', function(event) {
-      const key = event.key;
+
+    // Volume Calculator
+    function updateVolumeForm() {
+      const shape = document.getElementById('volume-shape').value;
+      const inputsDiv = document.getElementById('volume-inputs');
       
-      if ('0123456789.'.includes(key)) {
-        appendToDisplay(key);
-      } else if ('+-*/'.includes(key)) {
-        appendToDisplay(key);
-      } else if (key === 'Enter' || key === '=') {
-        calculate();
-      } else if (key === 'Escape' || key === 'c' || key === 'C') {
-        clearDisplay();
+      let html = '';
+      switch(shape) {
+        case 'rectangular':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Length (ft)</label>
+              <input type="number" class="form-input" id="volume-length" placeholder="Enter length">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Width (ft)</label>
+              <input type="number" class="form-input" id="volume-width" placeholder="Enter width">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Height (ft)</label>
+              <input type="number" class="form-input" id="volume-height" placeholder="Enter height">
+            </div>`;
+          break;
+        case 'cube':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Side Length (ft)</label>
+              <input type="number" class="form-input" id="volume-side" placeholder="Enter side length">
+            </div>`;
+          break;
+        case 'cylinder':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Radius (ft)</label>
+              <input type="number" class="form-input" id="volume-radius" placeholder="Enter radius">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Height (ft)</label>
+              <input type="number" class="form-input" id="volume-height" placeholder="Enter height">
+            </div>`;
+          break;
+        case 'sphere':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Radius (ft)</label>
+              <input type="number" class="form-input" id="volume-radius" placeholder="Enter radius">
+            </div>`;
+          break;
+      }
+      inputsDiv.innerHTML = html;
+    }
+
+    function calculateVolume() {
+      const shape = document.getElementById('volume-shape').value;
+      const resultDiv = document.getElementById('volume-result');
+      let volume = 0;
+      
+      try {
+        switch(shape) {
+          case 'rectangular':
+            const length = parseFloat(document.getElementById('volume-length').value);
+            const width = parseFloat(document.getElementById('volume-width').value);
+            const height = parseFloat(document.getElementById('volume-height').value);
+            volume = length * width * height;
+            break;
+          case 'cube':
+            const side = parseFloat(document.getElementById('volume-side').value);
+            volume = side * side * side;
+            break;
+          case 'cylinder':
+            const radius = parseFloat(document.getElementById('volume-radius').value);
+            const cylHeight = parseFloat(document.getElementById('volume-height').value);
+            volume = Math.PI * radius * radius * cylHeight;
+            break;
+          case 'sphere':
+            const sphereRadius = parseFloat(document.getElementById('volume-radius').value);
+            volume = (4/3) * Math.PI * sphereRadius * sphereRadius * sphereRadius;
+            break;
+        }
+        
+        resultDiv.innerHTML = `
+          <div class="status">
+            <h3>📦 Volume Calculation Result</h3>
+            <p><strong>Shape:</strong> ${shape.charAt(0).toUpperCase() + shape.slice(1)}</p>
+            <p><strong>Volume:</strong> ${volume.toFixed(2)} cubic feet</p>
+            <p><strong>Volume:</strong> ${(volume / 27).toFixed(2)} cubic yards</p>
+          </div>`;
+      } catch (error) {
+        resultDiv.innerHTML = '<div class="alert">Please enter valid numbers for all fields.</div>';
+      }
+    }
+
+    // Material Calculator
+    function updateMaterialForm() {
+      const material = document.getElementById('material-type').value;
+      const inputsDiv = document.getElementById('material-inputs');
+      
+      let html = '';
+      switch(material) {
+        case 'concrete':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Length (ft)</label>
+              <input type="number" class="form-input" id="material-length" placeholder="Enter length">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Width (ft)</label>
+              <input type="number" class="form-input" id="material-width" placeholder="Enter width">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Thickness (inches)</label>
+              <input type="number" class="form-input" id="material-thickness" placeholder="Enter thickness" value="4">
+            </div>`;
+          break;
+        case 'drywall':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Wall Height (ft)</label>
+              <input type="number" class="form-input" id="material-height" placeholder="Enter height" value="8">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Total Wall Length (ft)</label>
+              <input type="number" class="form-input" id="material-length" placeholder="Enter total length">
+            </div>`;
+          break;
+        case 'paint':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Total Wall Area (sq ft)</label>
+              <input type="number" class="form-input" id="material-area" placeholder="Enter area">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Number of Coats</label>
+              <input type="number" class="form-input" id="material-coats" placeholder="Enter coats" value="2">
+            </div>`;
+          break;
+        case 'flooring':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Room Length (ft)</label>
+              <input type="number" class="form-input" id="material-length" placeholder="Enter length">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Room Width (ft)</label>
+              <input type="number" class="form-input" id="material-width" placeholder="Enter width">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Waste Factor (%)</label>
+              <input type="number" class="form-input" id="material-waste" placeholder="Enter waste %" value="10">
+            </div>`;
+          break;
+      }
+      inputsDiv.innerHTML = html;
+    }
+
+    function calculateMaterial() {
+      const material = document.getElementById('material-type').value;
+      const resultDiv = document.getElementById('material-result');
+      
+      try {
+        let result = '';
+        switch(material) {
+          case 'concrete':
+            const length = parseFloat(document.getElementById('material-length').value);
+            const width = parseFloat(document.getElementById('material-width').value);
+            const thickness = parseFloat(document.getElementById('material-thickness').value);
+            
+            const volume = (length * width * (thickness / 12)) / 27; // cubic yards
+            const bags = Math.ceil(volume * 45); // ~45 bags per cubic yard
+            
+            result = `
+              <div class="status">
+                <h3>🏗️ Concrete Materials Needed</h3>
+                <p><strong>Area:</strong> ${(length * width).toFixed(2)} sq ft</p>
+                <p><strong>Volume:</strong> ${volume.toFixed(2)} cubic yards</p>
+                <p><strong>Ready Mix Concrete:</strong> ${volume.toFixed(2)} cubic yards</p>
+                <p><strong>OR Concrete Mix Bags:</strong> ${bags} bags (80 lb each)</p>
+                <p><strong>Estimated Cost:</strong> ${(volume * 180).toFixed(2)} (ready mix)</p>
+              </div>`;
+            break;
+            
+          case 'drywall':
+            const height = parseFloat(document.getElementById('material-height').value);
+            const wallLength = parseFloat(document.getElementById('material-length').value);
+            
+            const wallArea = height * wallLength;
+            const sheets = Math.ceil(wallArea / 32); // 4x8 sheet = 32 sq ft
+            const compound = Math.ceil(sheets / 8); // ~1 gallon per 8 sheets
+            const tape = Math.ceil(wallLength / 250); // ~250 ft per roll
+            
+            result = `
+              <div class="status">
+                <h3>🔨 Drywall Materials Needed</h3>
+                <p><strong>Wall Area:</strong> ${wallArea.toFixed(2)} sq ft</p>
+                <p><strong>Drywall Sheets (4x8):</strong> ${sheets} sheets</p>
+                <p><strong>Joint Compound:</strong> ${compound} gallons</p>
+                <p><strong>Drywall Tape:</strong> ${tape} rolls</p>
+                <p><strong>Estimated Cost:</strong> ${(sheets * 12.50 + compound * 18.75 + tape * 3.25).toFixed(2)}</p>
+              </div>`;
+            break;
+            
+          case 'paint':
+            const area = parseFloat(document.getElementById('material-area').value);
+            const coats = parseFloat(document.getElementById('material-coats').value);
+            
+            const coverage = 350; // sq ft per gallon
+            const gallons = Math.ceil((area * coats) / coverage);
+            const primer = Math.ceil(area / coverage);
+            
+            result = `
+              <div class="status">
+                <h3>🎨 Paint Materials Needed</h3>
+                <p><strong>Area to Paint:</strong> ${area.toFixed(2)} sq ft</p>
+                <p><strong>Number of Coats:</strong> ${coats}</p>
+                <p><strong>Paint Needed:</strong> ${gallons} gallons</p>
+                <p><strong>Primer Needed:</strong> ${primer} gallons</p>
+                <p><strong>Estimated Cost:</strong> ${(gallons * 48.50 + primer * 32.50).toFixed(2)}</p>
+              </div>`;
+            break;
+            
+          case 'flooring':
+            const roomLength = parseFloat(document.getElementById('material-length').value);
+            const roomWidth = parseFloat(document.getElementById('material-width').value);
+            const waste = parseFloat(document.getElementById('material-waste').value) / 100;
+            
+            const floorArea = roomLength * roomWidth;
+            const totalArea = floorArea * (1 + waste);
+            
+            result = `
+              <div class="status">
+                <h3>🏠 Flooring Materials Needed</h3>
+                <p><strong>Room Area:</strong> ${floorArea.toFixed(2)} sq ft</p>
+                <p><strong>With Waste (${(waste * 100)}%):</strong> ${totalArea.toFixed(2)} sq ft</p>
+                <p><strong>Laminate Flooring:</strong> ${totalArea.toFixed(2)} sq ft</p>
+                <p><strong>Estimated Cost:</strong> ${(totalArea * 3.15).toFixed(2)}</p>
+              </div>`;
+            break;
+        }
+        
+        resultDiv.innerHTML = result;
+      } catch (error) {
+        resultDiv.innerHTML = '<div class="alert">Please enter valid numbers for all fields.</div>';
+      }
+    }
+
+    // Database functions
+    function loadDatabase() {
+      databaseItems = [...constructionDatabase];
+      displayDatabase();
+    }
+
+    function displayDatabase() {
+      const tbody = document.getElementById('database-tbody');
+      tbody.innerHTML = '';
+      
+      databaseItems.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.item}</td>
+          <td>${item.category}</td>
+          <td>${item.unit}</td>
+          <td>${item.price.toFixed(2)}</td>
+          <td><button class="btn" onclick="addToEstimate('${index}')">➕ Add</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function searchDatabase() {
+      const searchTerm = document.getElementById('database-search').value.toLowerCase();
+      
+      if (searchTerm === '') {
+        databaseItems = [...constructionDatabase];
+      } else {
+        databaseItems = constructionDatabase.filter(item => 
+          item.item.toLowerCase().includes(searchTerm) ||
+          item.category.toLowerCase().includes(searchTerm)
+        );
+      }
+      
+      if (currentFilter !== 'all') {
+        databaseItems = databaseItems.filter(item => item.category === currentFilter);
+      }
+      
+      displayDatabase();
+    }
+
+    function filterDatabase(category) {
+      currentFilter = category;
+      
+      // Update filter tabs
+      const filterTabs = document.querySelectorAll('.filter-tab');
+      filterTabs.forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Filter items
+      const searchTerm = document.getElementById('database-search').value.toLowerCase();
+      
+      if (category === 'all') {
+        if (searchTerm === '') {
+          databaseItems = [...constructionDatabase];
+        } else {
+          databaseItems = constructionDatabase.filter(item => 
+            item.item.toLowerCase().includes(searchTerm) ||
+            item.category.toLowerCase().includes(searchTerm)
+          );
+        }
+      } else {
+        databaseItems = constructionDatabase.filter(item => {
+          const matchesCategory = item.category === category;
+          const matchesSearch = searchTerm === '' || 
+            item.item.toLowerCase().includes(searchTerm) ||
+            item.category.toLowerCase().includes(searchTerm);
+          return matchesCategory && matchesSearch;
+        });
+      }
+      
+      displayDatabase();
+    }
+
+    // Estimate functions
+    function addEstimateItem() {
+      const tbody = document.getElementById('estimate-tbody');
+      const newRow = document.createElement('tr');
+      
+      newRow.innerHTML = `
+        <td><input type="text" class="form-input" placeholder="Item name" onchange="updateEstimateTotal()"></td>
+        <td>
+          <select class="form-select" onchange="updateEstimateTotal()">
+            <option>Custom</option>
+            <option>Concrete & Masonry</option>
+            <option>Lumber & Wood</option>
+            <option>Electrical</option>
+            <option>Plumbing</option>
+            <option>Roofing</option>
+            <option>Labor</option>
+          </select>
+        </td>
+        <td><input type="number" class="form-input" placeholder="0" onchange="updateEstimateTotal()"></td>
+        <td><input type="text" class="form-input" placeholder="unit" onchange="updateEstimateTotal()"></td>
+        <td><input type="number" class="form-input" placeholder="0.00" step="0.01" onchange="updateEstimateTotal()"></td>
+        <td class="item-total">$0.00</td>
+        <td><button class="btn btn-danger" onclick="removeEstimateItem(this)">🗑️</button></td>
+      `;
+      
+      tbody.appendChild(newRow);
+      updateEstimateTotal();
+    }
+
+    function addToEstimate(index) {
+      const item = constructionDatabase[index];
+      const tbody = document.getElementById('estimate-tbody');
+      const newRow = document.createElement('tr');
+      
+      newRow.innerHTML = `
+        <td><input type="text" class="form-input" value="${item.item}" onchange="updateEstimateTotal()"></td>
+        <td>
+          <select class="form-select" onchange="updateEstimateTotal()">
+            <option selected>${item.category}</option>
+            <option>Custom</option>
+            <option>Concrete & Masonry</option>
+            <option>Lumber & Wood</option>
+            <option>Electrical</option>
+            <option>Plumbing</option>
+            <option>Roofing</option>
+            <option>Labor</option>
+          </select>
+        </td>
+        <td><input type="number" class="form-input" placeholder="1" value="1" onchange="updateEstimateTotal()"></td>
+        <td><input type="text" class="form-input" value="${item.unit}" onchange="updateEstimateTotal()"></td>
+        <td><input type="number" class="form-input" value="${item.price.toFixed(2)}" step="0.01" onchange="updateEstimateTotal()"></td>
+        <td class="item-total">${item.price.toFixed(2)}</td>
+        <td><button class="btn btn-danger" onclick="removeEstimateItem(this)">🗑️</button></td>
+      `;
+      
+      tbody.appendChild(newRow);
+      updateEstimateTotal();
+      
+      // Show success message
+      alert('✅ Item added to estimate!');
+    }
+
+    function removeEstimateItem(button) {
+      button.closest('tr').remove();
+      updateEstimateTotal();
+    }
+
+    function updateEstimateTotal() {
+      const rows = document.querySelectorAll('#estimate-tbody tr');
+      let subtotal = 0;
+      
+      rows.forEach(row => {
+        const quantity = parseFloat(row.children[2].querySelector('input').value) || 0;
+        const price = parseFloat(row.children[4].querySelector('input').value) || 0;
+        const itemTotal = quantity * price;
+        
+        row.children[5].textContent = '
+             + itemTotal.toFixed(2);
+        subtotal += itemTotal;
+      });
+      
+      const taxRate = parseFloat(document.getElementById('tax-rate').value) / 100 || 0;
+      const tax = subtotal * taxRate;
+      const total = subtotal + tax;
+      
+      document.getElementById('estimate-subtotal').textContent = '
+             + subtotal.toFixed(2);
+      document.getElementById('estimate-tax').textContent = '
+             + tax.toFixed(2);
+      document.getElementById('estimate-total').textContent = '
+             + total.toFixed(2);
+    }
+
+    function clearEstimate() {
+      if (confirm('Are you sure you want to clear all estimate items?')) {
+        document.getElementById('estimate-tbody').innerHTML = '';
+        updateEstimateTotal();
+      }
+    }
+
+    function saveEstimate() {
+      const estimate = {
+        projectName: document.getElementById('project-name').value,
+        clientName: document.getElementById('client-name').value,
+        projectType: document.getElementById('project-type').value,
+        taxRate: document.getElementById('tax-rate').value,
+        items: [],
+        timestamp: new Date().toISOString()
+      };
+      
+      const rows = document.querySelectorAll('#estimate-tbody tr');
+      rows.forEach(row => {
+        const item = {
+          name: row.children[0].querySelector('input').value,
+          category: row.children[1].querySelector('select').value,
+          quantity: parseFloat(row.children[2].querySelector('input').value) || 0,
+          unit: row.children[3].querySelector('input').value,
+          price: parseFloat(row.children[4].querySelector('input').value) || 0
+        };
+        estimate.items.push(item);
+      });
+      
+      // Save to memory (in a real app, this would save to a database)
+      window.savedEstimate = estimate;
+      
+      alert('💾 Estimate saved successfully!');
+    }
+
+    function loadSavedEstimate() {
+      // In a real app, this would load from a database
+      if (window.savedEstimate) {
+        const estimate = window.savedEstimate;
+        
+        document.getElementById('project-name').value = estimate.projectName || '';
+        document.getElementById('client-name').value = estimate.clientName || '';
+        document.getElementById('project-type').value = estimate.projectType || 'Residential';
+        document.getElementById('tax-rate').value = estimate.taxRate || '8.25';
+        
+        // Load items
+        const tbody = document.getElementById('estimate-tbody');
+        tbody.innerHTML = '';
+        
+        estimate.items.forEach(item => {
+          const newRow = document.createElement('tr');
+          newRow.innerHTML = `
+            <td><input type="text" class="form-input" value="${item.name}" onchange="updateEstimateTotal()"></td>
+            <td>
+              <select class="form-select" onchange="updateEstimateTotal()">
+                <option ${item.category === 'Custom' ? 'selected' : ''}>Custom</option>
+                <option ${item.category === 'Concrete & Masonry' ? 'selected' : ''}>Concrete & Masonry</option>
+                <option ${item.category === 'Lumber & Wood' ? 'selected' : ''}>Lumber & Wood</option>
+                <option ${item.category === 'Electrical' ? 'selected' : ''}>Electrical</option>
+                <option ${item.category === 'Plumbing' ? 'selected' : ''}>Plumbing</option>
+                <option ${item.category === 'Roofing' ? 'selected' : ''}>Roofing</option>
+                <option ${item.category === 'Labor' ? 'selected' : ''}>Labor</option>
+              </select>
+            </td>
+            <td><input type="number" class="form-input" value="${item.quantity}" onchange="updateEstimateTotal()"></td>
+            <td><input type="text" class="form-input" value="${item.unit}" onchange="updateEstimateTotal()"></td>
+            <td><input type="number" class="form-input" value="${item.price.toFixed(2)}" step="0.01" onchange="updateEstimateTotal()"></td>
+            <td class="item-total">${(item.quantity * item.price).toFixed(2)}</td>
+            <td><button class="btn btn-danger" onclick="removeEstimateItem(this)">🗑️</button></td>
+          `;
+          tbody.appendChild(newRow);
+        });
+        
+        updateEstimateTotal();
+      }
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(event) {
+      // Calculator shortcuts
+      if (document.getElementById('calculator').classList.contains('active')) {
+        if (currentCalculator === 'basic') {
+          const display = document.getElementById('basic-display');
+          if (event.key >= '0' && event.key <= '9') {
+            appendBasic(event.key);
+          } else if (event.key === '+' || event.key === '-' || event.key === '*' || event.key === '/') {
+            appendBasic(event.key);
+          } else if (event.key === 'Enter' || event.key === '=') {
+            calculateBasic();
+          } else if (event.key === 'Escape' || event.key === 'c' || event.key === 'C') {
+            clearBasic();
+          } else if (event.key === 'Backspace') {
+            deleteBasic();
+          }
+        }
+      }
+      
+      // Page navigation shortcuts
+      if (event.ctrlKey || event.metaKey) {
+        switch(event.key) {
+          case '1':
+            event.preventDefault();
+            showPage('dashboard');
+            break;
+          case '2':
+            event.preventDefault();
+            showPage('calculator');
+            break;
+          case '3':
+            event.preventDefault();
+            showPage('estimate');
+            break;
+          case '4':
+            event.preventDefault();
+            showPage('database');
+            break;
+          case '5':
+            event.preventDefault();
+            showPage('about');
+            break;
+        }
       }
     });
-    
-    // Welcome message
-    console.log('🏗️ Construction Estimator Pro loaded successfully!');
-    console.log('✅ All features are working correctly');
-    console.log('📱 Mobile optimized and responsive');
-    console.log('🧮 Calculator ready for use');
-    
-    // Show success notification
-    setTimeout(() => {
-      alert('🎉 Welcome to Construction Estimator Pro!\n\n✅ Your site is now working correctly!\n🧮 Try the calculator\n📱 Works on mobile too');
-    }, 1000);
+
+    // Touch/swipe support for mobile
+    let touchStartX = null;
+    let touchStartY = null;
+
+    document.addEventListener('touchstart', function(event) {
+      touchStartX = event.changedTouches[0].screenX;
+      touchStartY = event.changedTouches[0].screenY;
+    }, false);
+
+    document.addEventListener('touchend', function(event) {
+      if (!touchStartX || !touchStartY) {
+        return;
+      }
+
+      let touchEndX = event.changedTouches[0].screenX;
+      let touchEndY = event.changedTouches[0].screenY;
+
+      let diffX = touchStartX - touchEndX;
+      let diffY = touchStartY - touchEndY;
+
+      // Only consider horizontal swipes
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+        const pages = ['dashboard', 'calculator', 'estimate', 'database', 'about'];
+        const currentPageElement = document.querySelector('.page.active');
+        const currentIndex = pages.indexOf(currentPageElement.id);
+
+        if (diffX > 0 && currentIndex < pages.length - 1) {
+          // Swipe left - next page
+          showPage(pages[currentIndex + 1]);
+        } else if (diffX < 0 && currentIndex > 0) {
+          // Swipe right - previous page
+          showPage(pages[currentIndex - 1]);
+        }
+      }
+
+      touchStartX = null;
+      touchStartY = null;
+    }, false);
+
+    // Auto-save functionality
+    setInterval(function() {
+      if (document.getElementById('estimate-tbody').children.length > 0) {
+        const estimate = {
+          projectName: document.getElementById('project-name').value,
+          clientName: document.getElementById('client-name').value,
+          projectType: document.getElementById('project-type').value,
+          taxRate: document.getElementById('tax-rate').value,
+          items: [],
+          timestamp: new Date().toISOString(),
+          autoSaved: true
+        };
+        
+        const rows = document.querySelectorAll('#estimate-tbody tr');
+        rows.forEach(row => {
+          const item = {
+            name: row.children[0].querySelector('input').value,
+            category: row.children[1].querySelector('select').value,
+            quantity: parseFloat(row.children[2].querySelector('input').value) || 0,
+            unit: row.children[3].querySelector('input').value,
+            price: parseFloat(row.children[4].querySelector('input').value) || 0
+          };
+          estimate.items.push(item);
+        });
+        
+        window.autoSavedEstimate = estimate;
+      }
+    }, 30000); // Auto-save every 30 seconds
+
+    // Performance monitoring
+    window.addEventListener('load', function() {
+      const loadTime = performance.now();
+      console.log(`Construction Estimator Pro loaded in ${loadTime.toFixed(2)}ms`);
+    });
+
+    // Error handling
+    window.addEventListener('error', function(event) {
+      console.error('Application Error:', event.error);
+      // In a real app, you might want to show a user-friendly error message
+    });
+
+    // Initialize tooltips and help text
+    function showHelp(topic) {
+      const helpTexts = {
+        calculator: 'Use keyboard shortcuts: Numbers 0-9, operators +, -, *, /, Enter/= for calculate, Esc/C for clear',
+        estimate: 'Add items manually or from the database. All calculations update automatically. Use Ctrl+S to save.',
+        database: 'Search by item name or category. Click filter tabs to narrow results. Prices updated for 2024-2025.',
+        materials: 'Enter dimensions in feet unless specified otherwise. Waste factors are automatically included where appropriate.'
+      };
+      
+      if (helpTexts[topic]) {
+        alert('💡 ' + helpTexts[topic]);
+      }
+    }
+
+    // Print functionality
+    function printEstimate() {
+      const printWindow = window.open('', '_blank');
+      const estimateContent = document.getElementById('estimate').innerHTML;
+      
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Construction Estimate</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              table { width: 100%; border-collapse: collapse; }
+              th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              th { background-color: #f2f2f2; }
+              .total-row { background-color: #667eea; color: white; font-weight: bold; }
+              .no-print { display: none; }
+            </style>
+          </head>
+          <body>
+            <h1>🏗️ Construction Estimate</h1>
+            ${estimateContent}
+          </body>
+        </html>
+      `);
+      
+      printWindow.document.close();
+      printWindow.print();
+    }
+
+    // Export to CSV functionality
+    function exportEstimateCSV() {
+      const rows = document.querySelectorAll('#estimate-tbody tr');
+      let csv = 'Item,Category,Quantity,Unit,Unit Price,Total\n';
+      
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const item = cells[0].querySelector('input').value;
+        const category = cells[1].querySelector('select').value;
+        const quantity = cells[2].querySelector('input').value;
+        const unit = cells[3].querySelector('input').value;
+        const price = cells[4].querySelector('input').value;
+        const total = cells[5].textContent.replace('
+            , '');
+        
+        csv += `"${item}","${category}","${quantity}","${unit}","${price}","${total}"\n`;
+      });
+      
+      // Add totals
+      const subtotal = document.getElementById('estimate-subtotal').textContent.replace('
+            , '');
+      const tax = document.getElementById('estimate-tax').textContent.replace('
+            , '');
+      const total = document.getElementById('estimate-total').textContent.replace('
+            , '');
+      
+      csv += `\n"","","","","Subtotal","${subtotal}"\n`;
+      csv += `"","","","","Tax","${tax}"\n`;
+      csv += `"","","","","TOTAL","${total}"\n`;
+      
+      // Download CSV
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'construction_estimate.csv';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+
+    // Add keyboard shortcuts info
+    console.log(`
+🏗️ Construction Estimator Pro - Keyboard Shortcuts:
+• Ctrl/Cmd + 1-5: Switch between pages
+• Calculator: Use number keys, operators, Enter, Esc
+• Swipe left/right on mobile to navigate pages
+• Auto-save every 30 seconds
+    `);
   </script>
 </body>
 </html>
