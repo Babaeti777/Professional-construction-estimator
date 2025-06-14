@@ -1,0 +1,1640 @@
+    // Make quick add item function global for chat integration
+    window.quickAddItem = function(itemName) {
+      // Find the item in the database
+      let foundItem = null;
+      let foundCategory = null;
+      
+      Object.entries(itemsDB).forEach(([category, items]) => {
+        const item = items.find(i => i.name === itemName);
+        if (item) {
+          foundItem = item;
+          foundCategory = category;
+        }
+      });
+      
+      if (foundItem) {
+        addRow({
+          item: foundItem.name,
+          category: foundCategory,
+          quantity: 1,
+          unit: foundItem.unit,
+          unitPrice: foundItem.price
+        });
+        
+        // Calculate the new row
+        const rows = document.querySelectorAll('#tableBody tr');
+        const lastRow = rows[rows.length - 1];
+        calculateRow(lastRow.querySelector('input[type="number"]'));
+      }
+    }
+
+    // Make save project function global
+    window.saveProject = function() {
+      const projectName = document.getElementById('projectName').value || 'Untitled Project';
+      const projectId = currentProject || 'project_' + Date.now();
+      
+      const rows = Array.from(document.querySelectorAll('#tableBody tr')).map(row => ({
+        item: row.querySelector('.item-search').value,
+        category: row.cells[1].textContent,
+        quantity: row.cells[2].querySelector('input').value,
+        unit: row.cells[3].textContent,
+        unitPrice: row.cells[4].querySelector('input').value
+      }));
+      
+      projects[projectId] = {
+        id: projectId,
+        name: projectName,
+        clientName: document.getElementById('clientName').value,
+        projectAddress: document.getElementById('projectAddress').value,
+        projectType: document.getElementById('projectType').value,
+        regionFactor: document.getElementById('regionFactor').value,
+        taxRate: document.getElementById('taxRate').value,
+        profitMargin: document.getElementById('profitMargin').value,
+        contingency: document.getElementById('contingency').value,
+        rows: rows,
+        timestamp: new Date().toISOString(),
+        total: document.getElementById('grandTotal').textContent
+      };
+      
+      currentProject = projectId;
+      saveToStorage();
+      
+      // Show confirmation
+      const saveBtn = document.getElementById('saveBtn');
+      saveBtn.textContent = '✅ Saved!';
+      saveBtn.classList.add('btn-success');
+      setTimeout(() => {
+        saveBtn.textContent = '💾 Save Project';
+        saveBtn.classList.remove('btn-success');
+      }, 2000);
+    }
+
+    // Enhanced keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      // Ctrl+/ for chat toggle
+      if (e.ctrlKey && e.key === '/') {
+        e.preventDefault();
+        window.toggleChat();
+      }
+      
+      // Ctrl+S for save
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        window.saveProject();
+      }
+      
+      // Ctrl+N for new estimate
+      if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        window.switchPage('estimate');
+      }
+      
+      // Escape to close modals/chat
+      if (e.key === 'Escape') {
+        if (chatOpen) {
+          window.toggleChat();
+        }
+        closeModal();
+      }
+      
+      // Arrow keys for calculator navigation (when focused)
+      if (e.target.classList.contains('calc-btn')) {
+        const buttons = Array.from(document.querySelectorAll('.calc-btn'));
+        const currentIndex = buttons.indexOf(e.target);
+        let newIndex = currentIndex;
+        
+        switch (e.key) {
+          case 'ArrowUp':
+            newIndex = Math.max(0, currentIndex - 4);
+            break;
+          case 'ArrowDown':
+            newIndex = Math.min(buttons.length - 1, currentIndex + 4);
+            break;
+          case 'ArrowLeft':
+            newIndex = Math.max(0, currentIndex - 1);
+            break;
+          case 'ArrowRight':
+            newIndex = Math.min(buttons.length - 1, currentIndex + 1);
+            break;
+          case 'Enter':
+          case ' ':
+            e.preventDefault();
+            e.target.click();
+            return;
+        }
+        
+        if (newIndex !== currentIndex) {
+          e.preventDefault();
+          buttons[newIndex].focus();
+        }
+      }
+    });
+
+    // PWA Support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('SW registered: ', registration);
+          })
+          .catch(registrationError => {
+            console.log('SW registration failed: ', registrationError);
+          });
+      });
+    }
+
+    // Add to home screen prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      
+      // Show install button
+      const installBtn = document.createElement('button');
+      installBtn.className = 'btn btn-primary mobile-only';
+      installBtn.innerHTML = '📱 Install App';
+      installBtn.onclick = () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted the install prompt');
+            }
+            deferredPrompt = null;
+            installBtn.remove();
+          });
+        }
+      };
+      
+      // Add to header actions
+      const headerActions = document.querySelector('.header-actions');
+      if (headerActions && window.innerWidth <= 768) {
+        headerActions.insertBefore(installBtn, headerActions.firstChild);
+      }
+    });
+
+    // Performance optimizations
+    function optimizePerformance() {
+      // Lazy load images
+      const images = document.querySelectorAll('img[data-src]');
+      const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+            imageObserver.unobserve(img);
+          }
+        });
+      });
+      
+      images.forEach(img => imageObserver.observe(img));
+      
+      // Debounce search inputs
+      const searchInputs = document.querySelectorAll('.item-search');
+      searchInputs.forEach(input => {
+        let timeout;
+        input.addEventListener('input', (e) => {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            filterItems(e.target);
+          }, 300);
+        });
+      });
+      
+      // Virtual scrolling for large tables (if needed)
+      const tables = document.querySelectorAll('.table');
+      tables.forEach(table => {
+        if (table.rows.length > 100) {
+          implementVirtualScrolling(table);
+        }
+      });
+    }
+
+    function implementVirtualScrolling(table) {
+      // Simple virtual scrolling implementation
+      const rowHeight = 45;
+      const containerHeight = 400;
+      const visibleRows = Math.ceil(containerHeight / rowHeight);
+      
+      const wrapper = document.createElement('div');
+      wrapper.style.height = containerHeight + 'px';
+      wrapper.style.overflow = 'auto';
+      
+      table.parentNode.insertBefore(wrapper, table);
+      wrapper.appendChild(table);
+      
+      // This is a simplified version - full implementation would be more complex
+    }
+
+    // Accessibility improvements
+    function enhanceAccessibility() {
+      // Add ARIA labels
+      const buttons = document.querySelectorAll('button:not([aria-label])');
+      buttons.forEach(btn => {
+        if (btn.textContent.trim()) {
+          btn.setAttribute('aria-label', btn.textContent.trim());
+        }
+      });
+      
+      // Ensure form labels are associated
+      const inputs = document.querySelectorAll('input:not([id])');
+      inputs.forEach((input, index) => {
+        const label = input.closest('.form-group')?.querySelector('label');
+        if (label && !input.id) {
+          const id = 'input_' + index;
+          input.id = id;
+          label.setAttribute('for', id);
+        }
+      });
+      
+      // Add keyboard navigation hints
+      const calcButtons = document.querySelectorAll('.calc-btn');
+      calcButtons.forEach(btn => {
+        btn.setAttribute('tabindex', '0');
+        btn.setAttribute('role', 'button');
+      });
+      
+      // Screen reader announcements for calculator
+      const displays = document.querySelectorAll('.calc-display');
+      displays.forEach(display => {
+        display.setAttribute('aria-live', 'polite');
+        display.setAttribute('aria-label', 'Calculator display');
+      });
+    }
+
+    // Error handling and user feedback
+    function setupErrorHandling() {
+      window.addEventListener('error', (e) => {
+        console.error('Application error:', e);
+        showNotification('An error occurred. Please refresh the page if problems persist.', 'danger');
+      });
+      
+      window.addEventListener('unhandledrejection', (e) => {
+        console.error('Unhandled promise rejection:', e);
+        showNotification('Something went wrong. Please try again.', 'warning');
+      });
+      
+      // Network status
+      window.addEventListener('online', () => {
+        showNotification('Connection restored', 'success');
+      });
+      
+      window.addEventListener('offline', () => {
+        showNotification('Working offline - data will sync when connected', 'warning');
+      });
+    }
+
+    // Data backup and recovery
+    function setupDataBackup() {
+      // Auto-backup every 5 minutes
+      setInterval(() => {
+        if (Object.keys(projects).length > 0) {
+          const backup = {
+            projects: projects,
+            timestamp: new Date().toISOString(),
+            version: '1.0'
+          };
+          localStorage.setItem('constructionEstimatorBackup', JSON.stringify(backup));
+        }
+      }, 5 * 60 * 1000);
+      
+      // Recovery function
+      window.recoverData = function() {
+        const backup = localStorage.getItem('constructionEstimatorBackup');
+        if (backup) {
+          try {
+            const data = JSON.parse(backup);
+            projects = data.projects || {};
+            saveToStorage();
+            updateDashboard();
+            showNotification('Data recovered successfully!', 'success');
+          } catch (e) {
+            showNotification('Failed to recover data', 'danger');
+          }
+        } else {
+          showNotification('No backup data found', 'info');
+        }
+      }
+    }
+
+    // Analytics and usage tracking (privacy-friendly)
+    function setupAnalytics() {
+      const analytics = {
+        pageViews: {},
+        calculatorUsage: {},
+        projectsCreated: 0,
+        itemsAdded: 0
+      };
+      
+      // Track page views
+      const originalSwitchPage = window.switchPage;
+      window.switchPage = function(page) {
+        analytics.pageViews[page] = (analytics.pageViews[page] || 0) + 1;
+        localStorage.setItem('appAnalytics', JSON.stringify(analytics));
+        return originalSwitchPage(page);
+      };
+      
+      // Track calculator usage
+      const originalSwitchCalculator = window.switchCalculator;
+      window.switchCalculator = function(type) {
+        analytics.calculatorUsage[type] = (analytics.calculatorUsage[type] || 0) + 1;
+        localStorage.setItem('appAnalytics', JSON.stringify(analytics));
+        return originalSwitchCalculator(type);
+      };
+      
+      // Load existing analytics
+      const saved = localStorage.getItem('appAnalytics');
+      if (saved) {
+        Object.assign(analytics, JSON.parse(saved));
+      }
+    }
+
+    // Initialize all enhancements
+    document.addEventListener('DOMContentLoaded', () => {
+      optimizePerformance();
+      enhanceAccessibility();
+      setupErrorHandling();
+      setupDataBackup();
+      setupAnalytics();
+      
+      // Show welcome message for first-time users
+      if (!localStorage.getItem('constructionEstimatorWelcome')) {
+        setTimeout(() => {
+          showNotification('Welcome to Construction Estimator Pro! Press Ctrl+/ for help.', 'info', 5000);
+          localStorage.setItem('constructionEstimatorWelcome', 'true');
+        }, 1000);
+      }
+      
+      // Initialize tooltips for mobile
+      if (window.innerWidth <= 768) {
+        addMobileTooltips();
+      }
+    });
+
+    function addMobileTooltips() {
+      const tooltipElements = document.querySelectorAll('[title]');
+      tooltipElements.forEach(element => {
+        const title = element.getAttribute('title');
+        element.removeAttribute('title');
+        element.setAttribute('data-tooltip', title);
+        
+        element.addEventListener('touchstart', (e) => {
+          showTooltip(e.target, title);
+        });
+        
+        element.addEventListener('touchend', () => {
+          hideTooltip();
+        });
+      });
+    }
+
+    function showTooltip(element, text) {
+      const tooltip = document.createElement('div');
+      tooltip.className = 'mobile-tooltip';
+      tooltip.textContent = text;
+      tooltip.style.cssText = `
+        position: absolute;
+        background: var(--text);
+        color: var(--bg);
+        padding: 0.5rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.75rem;
+        z-index: 1000;
+        pointer-events: none;
+      `;
+      
+      document.body.appendChild(tooltip);
+      
+      const rect = element.getBoundingClientRect();
+      tooltip.style.top = (rect.top - tooltip.offsetHeight - 5) + 'px';
+      tooltip.style.left = (rect.left + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+      
+      setTimeout(() => tooltip.remove(), 2000);
+    }
+
+    function hideTooltip() {
+      const tooltips = document.querySelectorAll('.mobile-tooltip');
+      tooltips.forEach(tooltip => tooltip.remove());
+    }
+
+    // Export functions for external use
+    window.ConstructionEstimator = {
+      switchPage: window.switchPage,
+      saveProject: window.saveProject,
+      toggleChat: window.toggleChat,
+      quickAddItem: window.quickAddItem,
+      switchCalculator: window.switchCalculator,
+      calculateArea: window.calculateArea,
+      calculateVolume: window.calculateVolume,
+      calculateMaterial: window.calculateMaterial,
+      exportData: exportData,
+      importData: importData,
+      recoverData: window.recoverData
+    };
+  </script>
+</body>
+</html>    // Calculator Functions
+    let calculatorState = {
+      basic: { display: '', operation: null, previous: null },
+      scientific: { display: '', operation: null, previous: null }
+    };
+
+    // Switch calculator type
+    window.switchCalculator = function(type) {
+      // Update pills
+      document.querySelectorAll('.category-pill').forEach(pill => pill.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Hide all calculators
+      document.querySelectorAll('.calculator-section').forEach(section => {
+        section.classList.add('hidden');
+      });
+      
+      // Show selected calculator
+      document.getElementById(type + 'Calculator').classList.remove('hidden');
+      
+      // Initialize forms for area/volume/materials
+      if (type === 'area') updateAreaForm();
+      if (type === 'volume') updateVolumeForm();
+      if (type === 'materials') updateMaterialForm();
+    }
+
+    // Basic/Scientific Calculator Functions
+    window.calcInput = function(type, value) {
+      const display = document.getElementById(type + 'Display');
+      const state = calculatorState[type];
+      
+      if (['+', '-', '×', '÷'].includes(value)) {
+        if (state.display && !state.operation) {
+          state.previous = parseFloat(state.display);
+          state.operation = value;
+          state.display = '';
+        }
+      } else if (value === '±') {
+        if (state.display) {
+          state.display = (parseFloat(state.display) * -1).toString();
+        }
+      } else if (value === '%') {
+        if (state.display) {
+          state.display = (parseFloat(state.display) / 100).toString();
+        }
+      } else if (value === 'π') {
+        state.display = Math.PI.toString();
+      } else if (value === 'e') {
+        state.display = Math.E.toString();
+      } else {
+        if (state.display === '0' && value !== '.') {
+          state.display = value;
+        } else {
+          state.display += value;
+        }
+      }
+      
+      display.value = state.display || state.previous || '0';
+    }
+
+    window.calcFunction = function(type, func) {
+      const state = calculatorState[type];
+      const current = parseFloat(state.display) || 0;
+      let result;
+      
+      switch (func) {
+        case 'sin':
+          result = Math.sin(current * Math.PI / 180);
+          break;
+        case 'cos':
+          result = Math.cos(current * Math.PI / 180);
+          break;
+        case 'tan':
+          result = Math.tan(current * Math.PI / 180);
+          break;
+        case 'log':
+          result = Math.log10(current);
+          break;
+        case 'sqrt':
+          result = Math.sqrt(current);
+          break;
+        case 'pow':
+          result = Math.pow(current, 2);
+          break;
+        case 'factorial':
+          result = factorial(current);
+          break;
+        default:
+          return;
+      }
+      
+      state.display = result.toString();
+      document.getElementById(type + 'Display').value = state.display;
+    }
+
+    function factorial(n) {
+      if (n < 0) return NaN;
+      if (n === 0 || n === 1) return 1;
+      let result = 1;
+      for (let i = 2; i <= n; i++) {
+        result *= i;
+      }
+      return result;
+    }
+
+    window.calcEquals = function(type) {
+      const state = calculatorState[type];
+      const current = parseFloat(state.display) || 0;
+      
+      if (state.operation && state.previous !== null) {
+        let result;
+        switch (state.operation) {
+          case '+':
+            result = state.previous + current;
+            break;
+          case '-':
+            result = state.previous - current;
+            break;
+          case '×':
+            result = state.previous * current;
+            break;
+          case '÷':
+            result = current !== 0 ? state.previous / current : 'Error';
+            break;
+        }
+        
+        state.display = result.toString();
+        state.operation = null;
+        state.previous = null;
+        document.getElementById(type + 'Display').value = state.display;
+      }
+    }
+
+    window.calcClear = function(type) {
+      calculatorState[type] = { display: '', operation: null, previous: null };
+      document.getElementById(type + 'Display').value = '0';
+    }
+
+    // Area Calculator
+    window.updateAreaForm = function() {
+      const shape = document.getElementById('areaShape').value;
+      const container = document.getElementById('areaInputs');
+      
+      let html = '';
+      switch (shape) {
+        case 'rectangle':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Length</label>
+              <input type="number" class="form-input" id="areaLength" placeholder="Length">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Width</label>
+              <input type="number" class="form-input" id="areaWidth" placeholder="Width">
+            </div>
+          `;
+          break;
+        case 'square':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Side Length</label>
+              <input type="number" class="form-input" id="areaSide" placeholder="Side length">
+            </div>
+          `;
+          break;
+        case 'circle':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Radius</label>
+              <input type="number" class="form-input" id="areaRadius" placeholder="Radius">
+            </div>
+          `;
+          break;
+        case 'triangle':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Base</label>
+              <input type="number" class="form-input" id="areaBase" placeholder="Base">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Height</label>
+              <input type="number" class="form-input" id="areaHeight" placeholder="Height">
+            </div>
+          `;
+          break;
+        case 'trapezoid':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Base 1</label>
+              <input type="number" class="form-input" id="areaBase1" placeholder="First base">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Base 2</label>
+              <input type="number" class="form-input" id="areaBase2" placeholder="Second base">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Height</label>
+              <input type="number" class="form-input" id="areaHeight" placeholder="Height">
+            </div>
+          `;
+          break;
+      }
+      container.innerHTML = html;
+    }
+
+    window.calculateArea = function() {
+      const shape = document.getElementById('areaShape').value;
+      const unit = document.getElementById('areaUnit').value;
+      let area = 0;
+      let formula = '';
+      
+      switch (shape) {
+        case 'rectangle':
+          const length = parseFloat(document.getElementById('areaLength').value) || 0;
+          const width = parseFloat(document.getElementById('areaWidth').value) || 0;
+          area = length * width;
+          formula = `${length} × ${width}`;
+          break;
+        case 'square':
+          const side = parseFloat(document.getElementById('areaSide').value) || 0;
+          area = side * side;
+          formula = `${side}²`;
+          break;
+        case 'circle':
+          const radius = parseFloat(document.getElementById('areaRadius').value) || 0;
+          area = Math.PI * radius * radius;
+          formula = `π × ${radius}²`;
+          break;
+        case 'triangle':
+          const base = parseFloat(document.getElementById('areaBase').value) || 0;
+          const height = parseFloat(document.getElementById('areaHeight').value) || 0;
+          area = 0.5 * base * height;
+          formula = `½ × ${base} × ${height}`;
+          break;
+        case 'trapezoid':
+          const base1 = parseFloat(document.getElementById('areaBase1').value) || 0;
+          const base2 = parseFloat(document.getElementById('areaBase2').value) || 0;
+          const trapHeight = parseFloat(document.getElementById('areaHeight').value) || 0;
+          area = 0.5 * (base1 + base2) * trapHeight;
+          formula = `½ × (${base1} + ${base2}) × ${trapHeight}`;
+          break;
+      }
+      
+      const sqYards = area / 9;
+      const sqMeters = area * 0.092903;
+      
+      document.getElementById('areaResult').innerHTML = `
+        <h4>Area Calculation</h4>
+        <div class="result-value">${area.toFixed(2)} ${unit}²</div>
+        <div class="result-details">
+          <strong>Formula:</strong> ${formula}<br>
+          <strong>Conversions:</strong><br>
+          • ${sqYards.toFixed(2)} square yards<br>
+          • ${sqMeters.toFixed(2)} square meters<br>
+          • ${(area / 43560).toFixed(4)} acres
+        </div>
+      `;
+    }
+
+    // Volume Calculator
+    window.updateVolumeForm = function() {
+      const shape = document.getElementById('volumeShape').value;
+      const container = document.getElementById('volumeInputs');
+      
+      let html = '';
+      switch (shape) {
+        case 'rectangular':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Length</label>
+              <input type="number" class="form-input" id="volumeLength" placeholder="Length">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Width</label>
+              <input type="number" class="form-input" id="volumeWidth" placeholder="Width">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Height</label>
+              <input type="number" class="form-input" id="volumeHeight" placeholder="Height">
+            </div>
+          `;
+          break;
+        case 'cube':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Side Length</label>
+              <input type="number" class="form-input" id="volumeSide" placeholder="Side length">
+            </div>
+          `;
+          break;
+        case 'cylinder':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Radius</label>
+              <input type="number" class="form-input" id="volumeRadius" placeholder="Radius">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Height</label>
+              <input type="number" class="form-input" id="volumeHeight" placeholder="Height">
+            </div>
+          `;
+          break;
+        case 'sphere':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Radius</label>
+              <input type="number" class="form-input" id="volumeRadius" placeholder="Radius">
+            </div>
+          `;
+          break;
+        case 'cone':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Radius</label>
+              <input type="number" class="form-input" id="volumeRadius" placeholder="Radius">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Height</label>
+              <input type="number" class="form-input" id="volumeHeight" placeholder="Height">
+            </div>
+          `;
+          break;
+      }
+      container.innerHTML = html;
+    }
+
+    window.calculateVolume = function() {
+      const shape = document.getElementById('volumeShape').value;
+      const unit = document.getElementById('volumeUnit').value;
+      let volume = 0;
+      let formula = '';
+      
+      switch (shape) {
+        case 'rectangular':
+          const length = parseFloat(document.getElementById('volumeLength').value) || 0;
+          const width = parseFloat(document.getElementById('volumeWidth').value) || 0;
+          const height = parseFloat(document.getElementById('volumeHeight').value) || 0;
+          volume = length * width * height;
+          formula = `${length} × ${width} × ${height}`;
+          break;
+        case 'cube':
+          const side = parseFloat(document.getElementById('volumeSide').value) || 0;
+          volume = side * side * side;
+          formula = `${side}³`;
+          break;
+        case 'cylinder':
+          const cylRadius = parseFloat(document.getElementById('volumeRadius').value) || 0;
+          const cylHeight = parseFloat(document.getElementById('volumeHeight').value) || 0;
+          volume = Math.PI * cylRadius * cylRadius * cylHeight;
+          formula = `π × ${cylRadius}² × ${cylHeight}`;
+          break;
+        case 'sphere':
+          const sphRadius = parseFloat(document.getElementById('volumeRadius').value) || 0;
+          volume = (4/3) * Math.PI * sphRadius * sphRadius * sphRadius;
+          formula = `(4/3) × π × ${sphRadius}³`;
+          break;
+        case 'cone':
+          const coneRadius = parseFloat(document.getElementById('volumeRadius').value) || 0;
+          const coneHeight = parseFloat(document.getElementById('volumeHeight').value) || 0;
+          volume = (1/3) * Math.PI * coneRadius * coneRadius * coneHeight;
+          formula = `(1/3) × π × ${coneRadius}² × ${coneHeight}`;
+          break;
+      }
+      
+      const cubicYards = volume / 27;
+      const gallons = volume * 7.48052;
+      const liters = volume * 28.3168;
+      
+      document.getElementById('volumeResult').innerHTML = `
+        <h4>Volume Calculation</h4>
+        <div class="result-value">${volume.toFixed(2)} ${unit}³</div>
+        <div class="result-details">
+          <strong>Formula:</strong> ${formula}<br>
+          <strong>Conversions:</strong><br>
+          • ${cubicYards.toFixed(2)} cubic yards<br>
+          • ${gallons.toFixed(2)} gallons<br>
+          • ${liters.toFixed(2)} liters
+        </div>
+      `;
+    }
+
+    // Materials Calculator
+    window.updateMaterialForm = function() {
+      const material = document.getElementById('materialType').value;
+      const container = document.getElementById('materialInputs');
+      const tipsContainer = document.getElementById('materialTips');
+      
+      let html = '';
+      let tips = '';
+      
+      switch (material) {
+        case 'concrete':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Length (ft)</label>
+              <input type="number" class="form-input" id="concreteLength" placeholder="Length in feet">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Width (ft)</label>
+              <input type="number" class="form-input" id="concreteWidth" placeholder="Width in feet">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Thickness (inches)</label>
+              <input type="number" class="form-input" id="concreteThickness" placeholder="Thickness in inches">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Waste Factor (%)</label>
+              <input type="number" class="form-input" id="concreteWaste" value="5" placeholder="Waste percentage">
+            </div>
+          `;
+          tips = `
+            <h5>💡 Concrete Tips</h5>
+            <ul>
+              <li>Standard slab thickness: 4-6 inches</li>
+              <li>Add 5-10% for waste and spillage</li>
+              <li>Consider pump truck costs for large pours</li>
+              <li>Order slightly more than calculated</li>
+            </ul>
+          `;
+          break;
+        case 'drywall':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Wall Area (sq ft)</label>
+              <input type="number" class="form-input" id="drywallArea" placeholder="Total wall area">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sheet Size</label>
+              <select class="form-select" id="drywallSize">
+                <option value="32">4x8 (32 sq ft)</option>
+                <option value="48">4x12 (48 sq ft)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Waste Factor (%)</label>
+              <input type="number" class="form-input" id="drywallWaste" value="10" placeholder="Waste percentage">
+            </div>
+          `;
+          tips = `
+            <h5>💡 Drywall Tips</h5>
+            <ul>
+              <li>Subtract door and window areas</li>
+              <li>Add 10-15% for cuts and waste</li>
+              <li>Consider ceiling height for sheet selection</li>
+              <li>Don't forget screws, tape, and compound</li>
+            </ul>
+          `;
+          break;
+        case 'paint':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Surface Area (sq ft)</label>
+              <input type="number" class="form-input" id="paintArea" placeholder="Total surface area">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Number of Coats</label>
+              <input type="number" class="form-input" id="paintCoats" value="2" min="1" max="5">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Coverage (sq ft/gallon)</label>
+              <input type="number" class="form-input" id="paintCoverage" value="350" placeholder="Coverage per gallon">
+            </div>
+          `;
+          tips = `
+            <h5>💡 Paint Tips</h5>
+            <ul>
+              <li>Standard coverage: 350 sq ft per gallon</li>
+              <li>Primer may require different coverage</li>
+              <li>Textured surfaces need more paint</li>
+              <li>Buy extra for touch-ups later</li>
+            </ul>
+          `;
+          break;
+        case 'flooring':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Room Length (ft)</label>
+              <input type="number" class="form-input" id="flooringLength" placeholder="Room length">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Room Width (ft)</label>
+              <input type="number" class="form-input" id="flooringWidth" placeholder="Room width">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Waste Factor (%)</label>
+              <input type="number" class="form-input" id="flooringWaste" value="10" placeholder="Waste percentage">
+            </div>
+          `;
+          tips = `
+            <h5>💡 Flooring Tips</h5>
+            <ul>
+              <li>Add 10% for cuts and waste</li>
+              <li>Add 15% for diagonal patterns</li>
+              <li>Consider transition strips</li>
+              <li>Account for closets and irregular areas</li>
+            </ul>
+          `;
+          break;
+        case 'roofing':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Roof Length (ft)</label>
+              <input type="number" class="form-input" id="roofLength" placeholder="Roof length">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Roof Width (ft)</label>
+              <input type="number" class="form-input" id="roofWidth" placeholder="Roof width">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Roof Pitch</label>
+              <select class="form-select" id="roofPitch">
+                <option value="1.00">Flat (0/12)</option>
+                <option value="1.03">2/12</option>
+                <option value="1.08">4/12</option>
+                <option value="1.15">6/12</option>
+                <option value="1.25">8/12</option>
+                <option value="1.41">12/12</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Waste Factor (%)</label>
+              <input type="number" class="form-input" id="roofWaste" value="15" placeholder="Waste percentage">
+            </div>
+          `;
+          tips = `
+            <h5>💡 Roofing Tips</h5>
+            <ul>
+              <li>Measure the actual roof surface, not floor area</li>
+              <li>Add 15% for cuts, ridge, and waste</li>
+              <li>Don't forget underlayment and flashing</li>
+              <li>Consider starter strips and ridge caps</li>
+            </ul>
+          `;
+          break;
+        case 'lumber':
+          html = `
+            <div class="form-group">
+              <label class="form-label">Stud Spacing</label>
+              <select class="form-select" id="studSpacing">
+                <option value="16">16" on center</option>
+                <option value="24">24" on center</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Wall Length (ft)</label>
+              <input type="number" class="form-input" id="wallLength" placeholder="Total wall length">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Wall Height (ft)</label>
+              <input type="number" class="form-input" id="wallHeight" value="8" placeholder="Wall height">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Waste Factor (%)</label>
+              <input type="number" class="form-input" id="lumberWaste" value="10" placeholder="Waste percentage">
+            </div>
+          `;
+          tips = `
+            <h5>💡 Lumber Tips</h5>
+            <ul>
+              <li>16" spacing is stronger, 24" saves material</li>
+              <li>Add studs for corners and intersections</li>
+              <li>Don't forget plates and headers</li>
+              <li>Consider lumber grade for application</li>
+            </ul>
+          `;
+          break;
+      }
+      
+      container.innerHTML = html;
+      tipsContainer.innerHTML = tips;
+    }
+
+    window.calculateMaterial = function() {
+      const material = document.getElementById('materialType').value;
+      let result = '';
+      
+      switch (material) {
+        case 'concrete':
+          const length = parseFloat(document.getElementById('concreteLength').value) || 0;
+          const width = parseFloat(document.getElementById('concreteWidth').value) || 0;
+          const thickness = parseFloat(document.getElementById('concreteThickness').value) || 0;
+          const waste = parseFloat(document.getElementById('concreteWaste').value) || 0;
+          
+          const volume = (length * width * (thickness / 12)) / 27; // cubic yards
+          const totalVolume = volume * (1 + waste / 100);
+          const cost = totalVolume * 166; // $166 per cubic yard
+          
+          result = `
+            <h4>Concrete Required</h4>
+            <div class="result-value">${totalVolume.toFixed(2)} cubic yards</div>
+            <div class="result-details">
+              <strong>Base volume:</strong> ${volume.toFixed(2)} cubic yards<br>
+              <strong>With ${waste}% waste:</strong> ${totalVolume.toFixed(2)} cubic yards<br>
+              <strong>Estimated cost:</strong> ${cost.toFixed(2)}<br>
+              <strong>Dimensions:</strong> ${length}' × ${width}' × ${thickness}"
+            </div>
+          `;
+          break;
+          
+        case 'drywall':
+          const area = parseFloat(document.getElementById('drywallArea').value) || 0;
+          const sheetSize = parseFloat(document.getElementById('drywallSize').value) || 32;
+          const drywallWaste = parseFloat(document.getElementById('drywallWaste').value) || 0;
+          
+          const sheets = Math.ceil((area * (1 + drywallWaste / 100)) / sheetSize);
+          const sheetCost = sheets * 16.80; // $16.80 per sheet
+          
+          result = `
+            <h4>Drywall Required</h4>
+            <div class="result-value">${sheets} sheets</div>
+            <div class="result-details">
+              <strong>Coverage area:</strong> ${area} sq ft<br>
+              <strong>Sheet size:</strong> ${sheetSize} sq ft each<br>
+              <strong>With ${drywallWaste}% waste:</strong> ${sheets} sheets<br>
+              <strong>Estimated cost:</strong> ${sheetCost.toFixed(2)}
+            </div>
+          `;
+          break;
+          
+        case 'paint':
+          const paintArea = parseFloat(document.getElementById('paintArea').value) || 0;
+          const coats = parseFloat(document.getElementById('paintCoats').value) || 2;
+          const coverage = parseFloat(document.getElementById('paintCoverage').value) || 350;
+          
+          const gallons = Math.ceil((paintArea * coats) / coverage);
+          const paintCost = gallons * 32; // $32 per gallon
+          
+          result = `
+            <h4>Paint Required</h4>
+            <div class="result-value">${gallons} gallons</div>
+            <div class="result-details">
+              <strong>Surface area:</strong> ${paintArea} sq ft<br>
+              <strong>Number of coats:</strong> ${coats}<br>
+              <strong>Coverage:</strong> ${coverage} sq ft/gallon<br>
+              <strong>Estimated cost:</strong> ${paintCost.toFixed(2)}
+            </div>
+          `;
+          break;
+          
+        case 'flooring':
+          const floorLength = parseFloat(document.getElementById('flooringLength').value) || 0;
+          const floorWidth = parseFloat(document.getElementById('flooringWidth').value) || 0;
+          const floorWaste = parseFloat(document.getElementById('flooringWaste').value) || 0;
+          
+          const floorArea = floorLength * floorWidth;
+          const totalFloorArea = floorArea * (1 + floorWaste / 100);
+          const floorCost = totalFloorArea * 6.75; // $6.75 per sq ft
+          
+          result = `
+            <h4>Flooring Required</h4>
+            <div class="result-value">${totalFloorArea.toFixed(2)} sq ft</div>
+            <div class="result-details">
+              <strong>Room area:</strong> ${floorArea} sq ft<br>
+              <strong>With ${floorWaste}% waste:</strong> ${totalFloorArea.toFixed(2)} sq ft<br>
+              <strong>Estimated cost:</strong> ${floorCost.toFixed(2)}<br>
+              <strong>Room size:</strong> ${floorLength}' × ${floorWidth}'
+            </div>
+          `;
+          break;
+          
+        case 'roofing':
+          const roofLength = parseFloat(document.getElementById('roofLength').value) || 0;
+          const roofWidth = parseFloat(document.getElementById('roofWidth').value) || 0;
+          const pitchFactor = parseFloat(document.getElementById('roofPitch').value) || 1.0;
+          const roofWaste = parseFloat(document.getElementById('roofWaste').value) || 0;
+          
+          const roofArea = roofLength * roofWidth * pitchFactor;
+          const totalRoofArea = roofArea * (1 + roofWaste / 100);
+          const squares = totalRoofArea / 100; // roofing square = 100 sq ft
+          const roofCost = totalRoofArea * 3.75; // $3.75 per sq ft for shingles
+          
+          result = `
+            <h4>Roofing Required</h4>
+            <div class="result-value">${totalRoofArea.toFixed(2)} sq ft (${squares.toFixed(2)} squares)</div>
+            <div class="result-details">
+              <strong>Base area:</strong> ${roofArea.toFixed(2)} sq ft<br>
+              <strong>With ${roofWaste}% waste:</strong> ${totalRoofArea.toFixed(2)} sq ft<br>
+              <strong>Roofing squares:</strong> ${squares.toFixed(2)}<br>
+              <strong>Estimated cost:</strong> ${roofCost.toFixed(2)}
+            </div>
+          `;
+          break;
+          
+        case 'lumber':
+          const spacing = parseFloat(document.getElementById('studSpacing').value) || 16;
+          const wallLength = parseFloat(document.getElementById('wallLength').value) || 0;
+          const wallHeight = parseFloat(document.getElementById('wallHeight').value) || 8;
+          const lumberWaste = parseFloat(document.getElementById('lumberWaste').value) || 0;
+          
+          const studs = Math.ceil((wallLength * 12) / spacing) + 1; // +1 for end stud
+          const plates = wallLength * 2; // top and bottom plates
+          const totalStuds = Math.ceil(studs * (1 + lumberWaste / 100));
+          const totalPlates = Math.ceil(plates * (1 + lumberWaste / 100));
+          const studCost = totalStuds * (wallHeight * 1.65); // $1.65 per linear foot
+          const plateCost = totalPlates * 1.65;
+          
+          result = `
+            <h4>Framing Lumber Required</h4>
+            <div class="result-value">${totalStuds} studs + ${totalPlates} LF plates</div>
+            <div class="result-details">
+              <strong>Stud spacing:</strong> ${spacing}" on center<br>
+              <strong>Wall dimensions:</strong> ${wallLength}' × ${wallHeight}'<br>
+              <strong>Studs needed:</strong> ${totalStuds} (${wallHeight}' long)<br>
+              <strong>Plates needed:</strong> ${totalPlates} linear feet<br>
+              <strong>Estimated cost:</strong> ${(studCost + plateCost).toFixed(2)}
+            </div>
+          `;
+          break;
+      }
+      
+      document.getElementById('materialResult').innerHTML = result;
+    }
+
+    // Reports Functions
+    window.generateReport = function(type) {
+      const container = document.getElementById('reportContent');
+      
+      if (Object.keys(projects).length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📊</div>
+            <div class="empty-state-title">No projects to report</div>
+            <div class="empty-state-description">Create some estimates first</div>
+          </div>
+        `;
+        return;
+      }
+      
+      let reportHtml = '';
+      
+      if (type === 'summary') {
+        const totalProjects = Object.keys(projects).length;
+        let totalValue = 0;
+        const categoryTotals = {};
+        
+        Object.values(projects).forEach(project => {
+          const projectTotal = parseFloat(project.total?.replace(/[$,]/g, '') || 0);
+          totalValue += projectTotal;
+          
+          project.rows.forEach(row => {
+            const category = row.category || 'Other';
+            const itemTotal = parseFloat(row.quantity) * parseFloat(row.unitPrice);
+            categoryTotals[category] = (categoryTotals[category] || 0) + itemTotal;
+          });
+        });
+        
+        const avgProject = totalValue / totalProjects;
+        
+        reportHtml = `
+          <div class="report-summary">
+            <h3>📊 Portfolio Summary Report</h3>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-value">${totalProjects}</div>
+                <div class="stat-label">Total Projects</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">${totalValue.toFixed(0)}</div>
+                <div class="stat-label">Total Value</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">${avgProject.toFixed(0)}</div>
+                <div class="stat-label">Average Project</div>
+              </div>
+            </div>
+            
+            <h4>Category Breakdown</h4>
+            <div class="category-breakdown">
+              ${Object.entries(categoryTotals)
+                .sort(([,a], [,b]) => b - a)
+                .map(([category, total]) => `
+                  <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                    <span>${category}</span>
+                    <span><strong>${total.toFixed(2)}</strong></span>
+                  </div>
+                `).join('')}
+            </div>
+          </div>
+        `;
+      } else if (type === 'detailed') {
+        const sortedProjects = Object.values(projects)
+          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        reportHtml = `
+          <div class="report-detailed">
+            <h3>📋 Detailed Project Report</h3>
+            ${sortedProjects.map(project => `
+              <div class="project-detail" style="margin-bottom: 2rem; padding: 1.5rem; background: var(--bg-secondary); border-radius: var(--radius);">
+                <h4>${project.name}</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                  <div><strong>Client:</strong> ${project.clientName || 'N/A'}</div>
+                  <div><strong>Type:</strong> ${project.projectType || 'N/A'}</div>
+                  <div><strong>Date:</strong> ${new Date(project.timestamp).toLocaleDateString()}</div>
+                  <div><strong>Total:</strong> ${project.total || '$0.00'}</div>
+                </div>
+                <div style="overflow-x: auto;">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Item</th>
+                        <th>Category</th>
+                        <th>Qty</th>
+                        <th>Unit</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${project.rows.map(row => `
+                        <tr>
+                          <td>${row.item}</td>
+                          <td>${row.category}</td>
+                          <td>${row.quantity}</td>
+                          <td>${row.unit}</td>
+                          <td>${parseFloat(row.unitPrice).toFixed(2)}</td>
+                          <td>${(parseFloat(row.quantity) * parseFloat(row.unitPrice)).toFixed(2)}</td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+      
+      container.innerHTML = reportHtml;
+    }
+
+    window.exportReport = function() {
+      showNotification('Report export feature coming soon!', 'info');
+    }
+
+    // Enhanced mobile functions
+    function initializeMobileFeatures() {
+      // Add mobile-specific event listeners
+      document.addEventListener('touchstart', handleTouchStart, { passive: true });
+      document.addEventListener('touchmove', handleTouchMove, { passive: true });
+      
+      // Detect if user is on mobile
+      const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        // Add mobile class to body
+        document.body.classList.add('mobile-device');
+        
+        // Improve touch targets
+        enhanceTouchTargets();
+        
+        // Add swipe gestures for navigation
+        addSwipeNavigation();
+        
+        // Optimize calculator for mobile
+        optimizeCalculatorForMobile();
+      }
+    }
+
+    function handleTouchStart(e) {
+      if (e.target.classList.contains('calc-btn')) {
+        e.target.style.transform = 'scale(0.95)';
+        e.target.style.opacity = '0.8';
+      }
+    }
+
+    function handleTouchMove(e) {
+      if (e.target.classList.contains('calc-btn')) {
+        e.target.style.transform = '';
+        e.target.style.opacity = '';
+      }
+    }
+
+    function enhanceTouchTargets() {
+      // Ensure all interactive elements meet minimum touch target size
+      const interactiveElements = document.querySelectorAll('button, .nav-item, .calc-btn, input, select');
+      interactiveElements.forEach(element => {
+        const rect = element.getBoundingClientRect();
+        if (rect.height < 44) {
+          element.style.minHeight = '44px';
+        }
+      });
+    }
+
+    function addSwipeNavigation() {
+      let startX = 0;
+      let startY = 0;
+      
+      document.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+      
+      document.addEventListener('touchend', (e) => {
+        if (!startX || !startY) return;
+        
+        const endX = e.changedTouches[0].clientX;
+        const endY = e.changedTouches[0].clientY;
+        
+        const deltaX = endX - startX;
+        const deltaY = endY - startY;
+        
+        // Check if it's a horizontal swipe
+        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+          if (deltaX > 0 && startX < 50) {
+            // Swipe right from left edge - open sidebar
+            document.getElementById('sidebar').classList.add('open');
+          } else if (deltaX < 0 && document.getElementById('sidebar').classList.contains('open')) {
+            // Swipe left - close sidebar
+            document.getElementById('sidebar').classList.remove('open');
+          }
+        }
+        
+        startX = 0;
+        startY = 0;
+      }, { passive: true });
+    }
+
+    function optimizeCalculatorForMobile() {
+      // Adjust calculator button sizes for better mobile experience
+      const calcButtons = document.querySelectorAll('.calc-btn');
+      calcButtons.forEach(btn => {
+        btn.style.minHeight = '50px';
+        btn.style.fontSize = '1rem';
+      });
+      
+      // Add haptic feedback if available
+      if ('vibrate' in navigator) {
+        calcButtons.forEach(btn => {
+          btn.addEventListener('touchstart', () => {
+            navigator.vibrate(10);
+          });
+        });
+      }
+    }
+
+    // Initialize mobile features when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeMobileFeatures();
+      
+      // Initialize calculator forms
+      updateAreaForm();
+      updateVolumeForm();
+      updateMaterialForm();
+    });        <!-- Calculator Page -->
+        <div id="calculatorPage" class="page hidden">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span>🧮</span>
+                <span>Construction Calculator</span>
+              </h3>
+              <div class="category-pills">
+                <button class="category-pill active" onclick="switchCalculator('basic')">Basic</button>
+                <button class="category-pill" onclick="switchCalculator('scientific')">Scientific</button>
+                <button class="category-pill" onclick="switchCalculator('area')">Area</button>
+                <button class="category-pill" onclick="switchCalculator('volume')">Volume</button>
+                <button class="category-pill" onclick="switchCalculator('materials')">Materials</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <!-- Basic Calculator -->
+              <div id="basicCalculator" class="calculator-section">
+                <div class="calculator-display">
+                  <input type="text" id="basicDisplay" class="calc-display" readonly>
+                </div>
+                <div class="calculator-grid basic-grid">
+                  <button class="calc-btn calc-clear" onclick="calcClear('basic')">C</button>
+                  <button class="calc-btn calc-operator" onclick="calcInput('basic', '±')">±</button>
+                  <button class="calc-btn calc-operator" onclick="calcInput('basic', '%')">%</button>
+                  <button class="calc-btn calc-operator" onclick="calcInput('basic', '÷')">÷</button>
+                  
+                  <button class="calc-btn calc-number" onclick="calcInput('basic', '7')">7</button>
+                  <button class="calc-btn calc-number" onclick="calcInput('basic', '8')">8</button>
+                  <button class="calc-btn calc-number" onclick="calcInput('basic', '9')">9</button>
+                  <button class="calc-btn calc-operator" onclick="calcInput('basic', '×')">×</button>
+                  
+                  <button class="calc-btn calc-number" onclick="calcInput('basic', '4')">4</button>
+                  <button class="calc-btn calc-number" onclick="calcInput('basic', '5')">5</button>
+                  <button class="calc-btn calc-number" onclick="calcInput('basic', '6')">6</button>
+                  <button class="calc-btn calc-operator" onclick="calcInput('basic', '-')">-</button>
+                  
+                  <button class="calc-btn calc-number" onclick="calcInput('basic', '1')">1</button>
+                  <button class="calc-btn calc-number" onclick="calcInput('basic', '2')">2</button>
+                  <button class="calc-btn calc-number" onclick="calcInput('basic', '3')">3</button>
+                  <button class="calc-btn calc-operator" onclick="calcInput('basic', '+')">+</button>
+                  
+                  <button class="calc-btn calc-number calc-zero" onclick="calcInput('basic', '0')">0</button>
+                  <button class="calc-btn calc-number" onclick="calcInput('basic', '.')">.</button>
+                  <button class="calc-btn calc-equals" onclick="calcEquals('basic')">=</button>
+                </div>
+              </div>
+
+              <!-- Scientific Calculator -->
+              <div id="scientificCalculator" class="calculator-section hidden">
+                <div class="calculator-display">
+                  <input type="text" id="scientificDisplay" class="calc-display" readonly>
+                </div>
+                <div class="calculator-grid scientific-grid">
+                  <button class="calc-btn calc-clear" onclick="calcClear('scientific')">C</button>
+                  <button class="calc-btn calc-function" onclick="calcFunction('scientific', 'sin')">sin</button>
+                  <button class="calc-btn calc-function" onclick="calcFunction('scientific', 'cos')">cos</button>
+                  <button class="calc-btn calc-function" onclick="calcFunction('scientific', 'tan')">tan</button>
+                  <button class="calc-btn calc-function" onclick="calcFunction('scientific', 'log')">log</button>
+                  
+                  <button class="calc-btn calc-operator" onclick="calcInput('scientific', '(')">(</button>
+                  <button class="calc-btn calc-operator" onclick="calcInput('scientific', ')')">)</button>
+                  <button class="calc-btn calc-function" onclick="calcFunction('scientific', 'sqrt')">√</button>
+                  <button class="calc-btn calc-function" onclick="calcFunction('scientific', 'pow')">x²</button>
+                  <button class="calc-btn calc-operator" onclick="calcInput('scientific', '÷')">÷</button>
+                  
+                  <button class="calc-btn calc-number" onclick="calcInput('scientific', '7')">7</button>
+                  <button class="calc-btn calc-number" onclick="calcInput('scientific', '8')">8</button>
+                  <button class="calc-btn calc-number" onclick="calcInput('scientific', '9')">9</button>
+                  <button class="calc-btn calc-operator" onclick="calcInput('scientific', '×')">×</button>
+                  <button class="calc-btn calc-function" onclick="calcInput('scientific', 'π')">π</button>
+                  
+                  <button class="calc-btn calc-number" onclick="calcInput('scientific', '4')">4</button>
+                  <button class="calc-btn calc-number" onclick="calcInput('scientific', '5')">5</button>
+                  <button class="calc-btn calc-number" onclick="calcInput('scientific', '6')">6</button>
+                  <button class="calc-btn calc-operator" onclick="calcInput('scientific', '-')">-</button>
+                  <button class="calc-btn calc-function" onclick="calcInput('scientific', 'e')">e</button>
+                  
+                  <button class="calc-btn calc-number" onclick="calcInput('scientific', '1')">1</button>
+                  <button class="calc-btn calc-number" onclick="calcInput('scientific', '2')">2</button>
+                  <button class="calc-btn calc-number" onclick="calcInput('scientific', '3')">3</button>
+                  <button class="calc-btn calc-operator" onclick="calcInput('scientific', '+')">+</button>
+                  <button class="calc-btn calc-function" onclick="calcFunction('scientific', 'factorial')">!</button>
+                  
+                  <button class="calc-btn calc-number calc-zero-sci" onclick="calcInput('scientific', '0')">0</button>
+                  <button class="calc-btn calc-number" onclick="calcInput('scientific', '.')">.</button>
+                  <button class="calc-btn calc-equals" onclick="calcEquals('scientific')">=</button>
+                </div>
+              </div>
+
+              <!-- Area Calculator -->
+              <div id="areaCalculator" class="calculator-section hidden">
+                <div class="calc-form-grid">
+                  <div class="form-group">
+                    <label class="form-label">Shape</label>
+                    <select class="form-select" id="areaShape" onchange="updateAreaForm()">
+                      <option value="rectangle">Rectangle</option>
+                      <option value="square">Square</option>
+                      <option value="circle">Circle</option>
+                      <option value="triangle">Triangle</option>
+                      <option value="trapezoid">Trapezoid</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Unit</label>
+                    <select class="form-select" id="areaUnit">
+                      <option value="ft">Feet</option>
+                      <option value="m">Meters</option>
+                      <option value="in">Inches</option>
+                      <option value="yd">Yards</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div id="areaInputs" class="calc-form-grid">
+                  <!-- Dynamic inputs based on shape -->
+                </div>
+                
+                <button class="btn btn-primary" onclick="calculateArea()" style="margin: 1rem 0;">
+                  📐 Calculate Area
+                </button>
+                
+                <div id="areaResult" class="calc-result"></div>
+              </div>
+
+              <!-- Volume Calculator -->
+              <div id="volumeCalculator" class="calculator-section hidden">
+                <div class="calc-form-grid">
+                  <div class="form-group">
+                    <label class="form-label">Shape</label>
+                    <select class="form-select" id="volumeShape" onchange="updateVolumeForm()">
+                      <option value="rectangular">Rectangular Prism</option>
+                      <option value="cube">Cube</option>
+                      <option value="cylinder">Cylinder</option>
+                      <option value="sphere">Sphere</option>
+                      <option value="cone">Cone</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Unit</label>
+                    <select class="form-select" id="volumeUnit">
+                      <option value="ft">Feet</option>
+                      <option value="m">Meters</option>
+                      <option value="in">Inches</option>
+                      <option value="yd">Yards</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div id="volumeInputs" class="calc-form-grid">
+                  <!-- Dynamic inputs based on shape -->
+                </div>
+                
+                <button class="btn btn-primary" onclick="calculateVolume()" style="margin: 1rem 0;">
+                  📦 Calculate Volume
+                </button>
+                
+                <div id="volumeResult" class="calc-result"></div>
+              </div>
+
+              <!-- Materials Calculator -->
+              <div id="materialsCalculator" class="calculator-section hidden">
+                <div class="calc-form-grid">
+                  <div class="form-group">
+                    <label class="form-label">Material Type</label>
+                    <select class="form-select" id="materialType" onchange="updateMaterialForm()">
+                      <option value="concrete">Concrete</option>
+                      <option value="drywall">Drywall</option>
+                      <option value="paint">Paint</option>
+                      <option value="flooring">Flooring</option>
+                      <option value="roofing">Roofing</option>
+                      <option value="lumber">Lumber</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div id="materialInputs" class="calc-form-grid">
+                  <!-- Dynamic inputs based on material -->
+                </div>
+                
+                <button class="btn btn-primary" onclick="calculateMaterial()" style="margin: 1rem 0;">
+                  🔨 Calculate Materials
+                </button>
+                
+                <div id="materialResult" class="calc-result"></div>
+                
+                <div class="material-tips" id="materialTips">
+                  <!-- Tips based on selected material -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reports Page -->
+        <div id="reportsPage" class="page hidden">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span>📈</span>
+                <span>Project Reports</span>
+              </h3>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-secondary" onclick="generateReport('summary')">📊 Summary</button>
+                <button class="btn btn-secondary" onclick="generateReport('detailed')">📋 Detailed</button>
+                <button class="btn btn-primary" onclick="exportReport()">📄 Export PDF</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="reportContent" class="empty-state">
+                <div class="empty-state-icon">📈</div>
+                <div class="empty-state-title">No reports generated</div>
+                <div class="empty-state-description">Select a report type to generate</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settingsPage" class="page hidden">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span>⚙️</span>
+                <span>Application Settings</span>
+              </h3>
+            </div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Company Name</label>
+                  <input type="text" class="form-input" id="companyName" placeholder="Your Company Name">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Company Email</label>
+                  <input type="email" class="form-input" id="companyEmail" placeholder="company@email.com">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Default Tax Rate (%)</label>
+                  <input type="number" class="form-input" id="defaultTaxRate" value="8.25">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Default Profit Margin (%)</label>
+                  <input type="number" class="form-input" id="defaultProfitMargin" value="15">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Default Contingency (%)</label>
+                  <input type="number" class="form-input" id="defaultContingency" value="10">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Currency Symbol</label>
+                  <input type="text" class="form-input" id="currencySymbol" value="$">
+                </div>
+              </div>
+              <button class="btn btn-primary" onclick="saveSettings()" style="margin-top: 1rem;">
+                💾 Save Settings
+              </button>
+            </div>
+          </div>
+        </div>

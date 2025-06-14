@@ -1,0 +1,507 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "lastUpdated": "2024-12",
+    "source": "Construction Industry Standards",
+    "currency": "USD",
+    "disclaimer": "Prices are estimates based on national averages. Actual costs may vary by location, supplier, and market conditions."
+  },
+  "categories": {
+    "Concrete & Masonry": [
+      {
+        "id": "CM001",
+        "name": "Concrete (Ready Mix)",
+        "unit": "cubic yard",
+        "price": 166.00,
+        "description": "Standard 3000 PSI concrete mix",
+        "updated": "2024-12",
+        "variations": {
+          "3000_psi": 166.00,
+          "4000_psi": 175.00,
+          "5000_psi": 185.00
+        }
+      },
+      {
+        "id": "CM002",
+        "name": "Concrete Installation",
+        "unit": "sq ft",
+        "price": 10.50,
+        "description": "Labor for concrete placement and finishing",
+        "updated": "2024-12"
+      },
+      {
+        "id": "CM003",
+        "name": "Concrete Pump Service",
+        "unit": "hour",
+        "price": 185.00,
+        "description": "Concrete pump truck rental",
+        "updated": "2024-12"
+      },
+      {
+        "id": "CM004",
+        "name": "Rebar #4",
+        "unit": "linear foot",
+        "price": 1.32,
+        "description": "Grade 60 rebar, 1/2 inch diameter",
+        "updated": "2024-12"
+      },
+      {
+        "id": "CM005",
+        "name": "Rebar #5",
+        "unit": "linear foot",
+        "price": 2.05,
+        "description": "Grade 60 rebar, 5/8 inch diameter",
+        "updated": "2024-12"
+      },
+      {
+        "id": "CM006",
+        "name": "Rebar #6",
+        "unit": "linear foot",
+        "price": 2.94,
+        "description": "Grade 60 rebar, 3/4 inch diameter",
+        "updated": "2024-12"
+      },
+      {
+        "id": "CM007",
+        "name": "Wire Mesh (6x6)",
+        "unit": "sq ft",
+        "price": 0.35,
+        "description": "Welded wire mesh reinforcement",
+        "updated": "2024-12"
+      },
+      {
+        "id": "CM008",
+        "name": "Concrete Block 8\"",
+        "unit": "each",
+        "price": 2.25,
+        "description": "Standard 8x8x16 concrete masonry unit",
+        "updated": "2024-12"
+      },
+      {
+        "id": "CM009",
+        "name": "Concrete Block 12\"",
+        "unit": "each",
+        "price": 3.15,
+        "description": "Standard 12x8x16 concrete masonry unit",
+        "updated": "2024-12"
+      },
+      {
+        "id": "CM010",
+        "name": "Mortar Mix",
+        "unit": "bag",
+        "price": 8.95,
+        "description": "Type N masonry mortar, 80 lb bag",
+        "updated": "2024-12"
+      },
+      {
+        "id": "CM011",
+        "name": "Brick (Standard)",
+        "unit": "1000",
+        "price": 485.00,
+        "description": "Standard clay brick, per thousand",
+        "updated": "2024-12"
+      },
+      {
+        "id": "CM012",
+        "name": "Stone Veneer",
+        "unit": "sq ft",
+        "price": 18.75,
+        "description": "Natural stone veneer, installed",
+        "updated": "2024-12"
+      },
+      {
+        "id": "CM013",
+        "name": "Concrete Sealer",
+        "unit": "gallon",
+        "price": 32.50,
+        "description": "Penetrating concrete sealer",
+        "updated": "2024-12"
+      }
+    ],
+    "Structural Steel": [
+      {
+        "id": "SS001",
+        "name": "Structural Steel Beam",
+        "unit": "ton",
+        "price": 1650.00,
+        "description": "Wide flange steel beam, fabricated",
+        "updated": "2024-12"
+      },
+      {
+        "id": "SS002",
+        "name": "Steel Column",
+        "unit": "ton",
+        "price": 1875.00,
+        "description": "Steel column, wide flange",
+        "updated": "2024-12"
+      },
+      {
+        "id": "SS003",
+        "name": "Metal Decking",
+        "unit": "sq ft",
+        "price": 3.85,
+        "description": "Composite metal floor decking",
+        "updated": "2024-12"
+      },
+      {
+        "id": "SS004",
+        "name": "Steel Studs 3-5/8\"",
+        "unit": "linear foot",
+        "price": 2.45,
+        "description": "Cold-formed steel framing studs",
+        "updated": "2024-12"
+      },
+      {
+        "id": "SS005",
+        "name": "Steel Studs 6\"",
+        "unit": "linear foot",
+        "price": 3.25,
+        "description": "Cold-formed steel framing studs",
+        "updated": "2024-12"
+      },
+      {
+        "id": "SS006",
+        "name": "Steel Track",
+        "unit": "linear foot",
+        "price": 2.15,
+        "description": "Cold-formed steel framing track",
+        "updated": "2024-12"
+      },
+      {
+        "id": "SS007",
+        "name": "Welding Labor",
+        "unit": "hour",
+        "price": 85.00,
+        "description": "Certified welder labor rate",
+        "updated": "2024-12"
+      },
+      {
+        "id": "SS008",
+        "name": "Steel Joist",
+        "unit": "linear foot",
+        "price": 18.50,
+        "description": "Open web steel joist",
+        "updated": "2024-12"
+      }
+    ],
+    "Lumber & Wood": [
+      {
+        "id": "LW001",
+        "name": "Framing Lumber 2x4x8",
+        "unit": "each",
+        "price": 5.85,
+        "description": "Douglas Fir 2x4x8 stud grade",
+        "updated": "2024-12"
+      },
+      {
+        "id": "LW002",
+        "name": "Framing Lumber 2x4",
+        "unit": "linear foot",
+        "price": 1.65,
+        "description": "Douglas Fir 2x4 stud grade",
+        "updated": "2024-12"
+      },
+      {
+        "id": "LW003",
+        "name": "Framing Lumber 2x6",
+        "unit": "linear foot",
+        "price": 2.80,
+        "description": "Douglas Fir 2x6 stud grade",
+        "updated": "2024-12"
+      },
+      {
+        "id": "LW004",
+        "name": "Framing Lumber 2x8",
+        "unit": "linear foot",
+        "price": 4.25,
+        "description": "Douglas Fir 2x8 construction grade",
+        "updated": "2024-12"
+      },
+      {
+        "id": "LW005",
+        "name": "Framing Lumber 2x10",
+        "unit": "linear foot",
+        "price": 6.15,
+        "description": "Douglas Fir 2x10 construction grade",
+        "updated": "2024-12"
+      },
+      {
+        "id": "LW006",
+        "name": "Framing Lumber 2x12",
+        "unit": "linear foot",
+        "price": 8.90,
+        "description": "Douglas Fir 2x12 construction grade",
+        "updated": "2024-12"
+      },
+      {
+        "id": "LW007",
+        "name": "Plywood 1/2\" CDX",
+        "unit": "sheet",
+        "price": 35.00,
+        "description": "CDX plywood 4x8 sheet, 1/2 inch",
+        "updated": "2024-12"
+      },
+      {
+        "id": "LW008",
+        "name": "Plywood 3/4\" CDX",
+        "unit": "sheet",
+        "price": 52.00,
+        "description": "CDX plywood 4x8 sheet, 3/4 inch",
+        "updated": "2024-12"
+      },
+      {
+        "id": "LW009",
+        "name": "OSB Sheathing 7/16\"",
+        "unit": "sheet",
+        "price": 28.00,
+        "description": "OSB sheathing 4x8 sheet, 7/16 inch",
+        "updated": "2024-12"
+      },
+      {
+        "id": "LW010",
+        "name": "OSB Sheathing 5/8\"",
+        "unit": "sheet",
+        "price": 36.00,
+        "description": "OSB sheathing 4x8 sheet, 5/8 inch",
+        "updated": "2024-12"
+      },
+      {
+        "id": "LW011",
+        "name": "Engineered I-Joist 11-7/8\"",
+        "unit": "linear foot",
+        "price": 4.85,
+        "description": "Engineered wood I-joist",
+        "updated": "2024-12"
+      },
+      {
+        "id": "LW012",
+        "name": "Glulam Beam 3.5x11.5",
+        "unit": "linear foot",
+        "price": 22.50,
+        "description": "Glued laminated timber beam",
+        "updated": "2024-12"
+      },
+      {
+        "id": "LW013",
+        "name": "LVL Beam 1.75x11.875",
+        "unit": "linear foot",
+        "price": 8.75,
+        "description": "Laminated veneer lumber beam",
+        "updated": "2024-12"
+      }
+    ],
+    "Labor": [
+      {
+        "id": "L001",
+        "name": "General Laborer",
+        "unit": "hour",
+        "price": 18.25,
+        "description": "General construction laborer",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L002",
+        "name": "Skilled Laborer",
+        "unit": "hour",
+        "price": 24.50,
+        "description": "Skilled construction laborer",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L003",
+        "name": "Carpenter (Apprentice)",
+        "unit": "hour",
+        "price": 22.50,
+        "description": "Apprentice carpenter",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L004",
+        "name": "Carpenter (Helper)",
+        "unit": "hour",
+        "price": 19.75,
+        "description": "Carpenter helper",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L005",
+        "name": "Carpenter (Skilled)",
+        "unit": "hour",
+        "price": 29.50,
+        "description": "Skilled carpenter",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L006",
+        "name": "Carpenter (Master)",
+        "unit": "hour",
+        "price": 42.00,
+        "description": "Master carpenter",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L007",
+        "name": "Electrician (Apprentice)",
+        "unit": "hour",
+        "price": 21.50,
+        "description": "Apprentice electrician",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L008",
+        "name": "Electrician (Journeyman)",
+        "unit": "hour",
+        "price": 34.50,
+        "description": "Journeyman electrician",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L009",
+        "name": "Electrician (Master)",
+        "unit": "hour",
+        "price": 48.75,
+        "description": "Master electrician",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L010",
+        "name": "Plumber (Apprentice)",
+        "unit": "hour",
+        "price": 22.50,
+        "description": "Apprentice plumber",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L011",
+        "name": "Plumber (Journeyman)",
+        "unit": "hour",
+        "price": 34.75,
+        "description": "Journeyman plumber",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L012",
+        "name": "Plumber (Master)",
+        "unit": "hour",
+        "price": 52.00,
+        "description": "Master plumber",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L013",
+        "name": "HVAC Technician",
+        "unit": "hour",
+        "price": 38.50,
+        "description": "HVAC installation technician",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L014",
+        "name": "Mason",
+        "unit": "hour",
+        "price": 31.25,
+        "description": "Brick and stone mason",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L015",
+        "name": "Roofer",
+        "unit": "hour",
+        "price": 26.50,
+        "description": "Roofing contractor",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L016",
+        "name": "Painter",
+        "unit": "hour",
+        "price": 23.75,
+        "description": "Interior/exterior painter",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L017",
+        "name": "Tile Setter",
+        "unit": "hour",
+        "price": 28.50,
+        "description": "Ceramic tile installer",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L018",
+        "name": "Drywall Installer",
+        "unit": "hour",
+        "price": 24.50,
+        "description": "Drywall hanger and finisher",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L019",
+        "name": "Flooring Installer",
+        "unit": "hour",
+        "price": 25.75,
+        "description": "Hardwood and laminate installer",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L020",
+        "name": "Insulation Installer",
+        "unit": "hour",
+        "price": 22.50,
+        "description": "Insulation contractor",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L021",
+        "name": "Concrete Finisher",
+        "unit": "hour",
+        "price": 28.75,
+        "description": "Concrete finishing specialist",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L022",
+        "name": "Welder",
+        "unit": "hour",
+        "price": 35.50,
+        "description": "Certified structural welder",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L023",
+        "name": "Foreman",
+        "unit": "hour",
+        "price": 38.50,
+        "description": "Construction site foreman",
+        "updated": "2024-12"
+      },
+      {
+        "id": "L024",
+        "name": "Project Manager",
+        "unit": "hour",
+        "price": 65.00,
+        "description": "Construction project manager",
+        "updated": "2024-12"
+      }
+    ]
+  },
+  "regionalFactors": {
+    "rural": 0.85,
+    "southeast": 0.90,
+    "midwest": 0.95,
+    "national": 1.00,
+    "northeast": 1.10,
+    "west_coast": 1.25,
+    "nyc_metro": 1.35,
+    "sf_bay_area": 1.40
+  },
+  "units": {
+    "length": ["linear foot", "foot", "inch", "yard"],
+    "area": ["sq ft", "sq yard", "acre"],
+    "volume": ["cubic foot", "cubic yard", "gallon"],
+    "weight": ["pound", "ton", "ounce"],
+    "count": ["each", "pair", "dozen", "1000"],
+    "time": ["hour", "day", "week"],
+    "materials": ["sheet", "bag", "roll", "bundle"]
+  }
+}
